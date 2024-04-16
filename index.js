@@ -23,7 +23,7 @@ function adjustDate(date) {
 }
 
 function getByIndex(index, array, channel) {
-  const item = (array[index].find(item => item._id.channel.toLowerCase() === channel))
+  const item = (array[index].find(item => item._id.channel.toLowerCase() === channel.toLowerCase()))
   return (item) ? item.totalViewCount : 0;
 }
 
@@ -33,6 +33,7 @@ app.get('/', async (req, res) => {
     const db = client.db(dbName);
     const channelStatsCol = db.collection('channel-stats');  
     const maxPerDay = await service.getMaxDay(channelStatsCol);
+    
     const maxPerDayTwitch = await service.getMaxDay(channelStatsCol, 'twitch');
     const maxPerDayYoutube = await service.getMaxDay(channelStatsCol, 'youtube');
     
@@ -67,8 +68,6 @@ app.get('/', async (req, res) => {
     const maxAfternoonYoutube = maxPerAfternoonYoutube[0] || [no_data_str, 0];
 
     const last10 = await service.getLast10Grouped(channelStatsCol);
-
-    console.log(last10);
     
     const htmlContent = fs.readFileSync('templates/main.ejs', 'utf8');
     const htmlRenderized = ejs.render(htmlContent, {

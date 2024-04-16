@@ -196,7 +196,7 @@
 								<i class="bi bi-clock"></i>
 							</div>
 							<h4>M&aacute;x. del d&iacute;a <br/><span class="aclaracion">24hs</span></h4>
-							<h3><%= data.totals.maxDayTwitch[0] %></h3>
+							<h3><%= (data.totals.maxDayTwitch[1] > 0) ? data.totals.maxDayTwitch[0] : 'sin datos'  %></h3>
 							<h2><%= data.totals.maxDayTwitch[1] %></h2>
               <div class="d-flex justify-content-end px-3 pb-3">
                 <i class="bi bi-twitch"></i>
@@ -250,7 +250,7 @@
 								<i class="bi bi-clock"></i>
 							</div>
 							<h4>M&aacute;x. del d&iacute;a <br/><span class="aclaracion">24hs</span></h4>
-							<h3><%= data.totals.maxDayYoutube[0] %></h3>
+							<h3><%= (data.totals.maxDayYoutube[1] > 0) ? data.totals.maxDayYoutube[0] : 'sin datos'  %></h3>
 							<h2><%= data.totals.maxDayYoutube[1] %></h2>
               <div class="d-flex justify-content-end px-3 pb-3">
                 <i class="bi bi-youtube"></i>
@@ -315,27 +315,11 @@
 									<td>
 										<%= data.adjustDate(new Date(i)) + ":" + String(new Date(i).getMinutes()).padStart(2, '0'); %>
 									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.totals, 'blender'); %>
-									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.totals, 'gelatina'); %>
-									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.totals, 'la casa'); %>
-									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.totals, 'luzu'); %>
-									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.totals, 'neura'); %>
-									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.totals, 'olga'); %>
-									</td>
-                  <td>
-										<%= data.getByIndex(i, data.values.totals, 'vorterix'); %>
-									</td>
+									<% for (var j=0; j<data.values.channels.length; j++) { %>
+										<td>
+											<%= data.getByIndex(i, data.values.totals, data.values.channels[j]); %>
+										</td>
+									<% } %>
 								</tr>
 								<% } %>
 						</tbody>
@@ -359,27 +343,11 @@
 									<td>
 										<%= data.adjustDate(new Date(i)) + ":" + String(new Date(i).getMinutes()).padStart(2, '0'); %>
 									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.twitch, 'blender'); %>
-									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.twitch, 'gelatina'); %>
-									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.twitch, 'la casa'); %>
-									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.twitch, 'luzu'); %>
-									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.twitch, 'neura'); %>
-									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.twitch, 'olga'); %>
-									</td>
-                  <td>
-										<%= data.getByIndex(i, data.values.twitch, 'vorterix'); %>
-									</td>
+									<% for (var j=0; j<data.values.channels.length; j++) { %>
+										<td>
+											<%= data.getByIndex(i, data.values.twitch, data.values.channels[j]); %>
+										</td>
+									<% } %>
 								</tr>
 								<% } %>
 						</tbody>
@@ -403,27 +371,11 @@
 									<td>
 										<%= data.adjustDate(new Date(i)) + ":" + String(new Date(i).getMinutes()).padStart(2, '0'); %>
 									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.youtube, 'blender'); %>
-									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.youtube, 'gelatina'); %>
-									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.youtube, 'la casa'); %>
-									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.youtube, 'luzu'); %>
-									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.youtube, 'neura'); %>
-									</td>
-									<td>
-										<%= data.getByIndex(i, data.values.youtube, 'olga'); %>
-									</td>
-                  					<td>
-										<%= data.getByIndex(i, data.values.youtube, 'vorterix'); %>
-									</td>
+									<% for (var j=0; j<data.values.channels.length; j++) { %>
+										<td>
+											<%= data.getByIndex(i, data.values.youtube, data.values.channels[j]); %>
+										</td>
+									<% } %>
 								</tr>
 								<% } %>
 						</tbody>
