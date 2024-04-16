@@ -7,8 +7,9 @@ const port = 3000;
 const { subHours } = require('date-fns');
 
 const { MongoClient } = require('mongodb');
+const config = require('config');
 
-const url = 'mongodb://0.0.0.0:27017';
+const url = config.mongo.url;
 const client = new MongoClient(url);
 const dbName = 'streamstats';
 const service = require('./services/data');
@@ -66,6 +67,8 @@ app.get('/', async (req, res) => {
     const maxAfternoonYoutube = maxPerAfternoonYoutube[0] || [no_data_str, 0];
 
     const last10 = await service.getLast10Grouped(channelStatsCol);
+
+    console.log(last10);
     
     const htmlContent = fs.readFileSync('templates/main.ejs', 'utf8');
     const htmlRenderized = ejs.render(htmlContent, {
