@@ -128,7 +128,17 @@ app.put('/youtube/channel/:name', jsonMiddleware, async(req, res) => {
   const channelsCol = db.collection('channels');
   const channel = await channelsCol.findOne({ platform: 'youtube', name: req.params.name });
   if (channel) {
-    const updated = await channelsCol.updateOne({ _id: channel._id }, { $set: { videoId: req.body.videoId }});
+    const set = {}
+    if (req.body.videoId) {
+      set.videoId = req.body.videoId;
+    }
+
+    if (req.body.channelUri) {
+      set.channelUri = req.body.channelUri;
+    }
+    const updated = await channelsCol.updateOne({ _id: channel._id }, { 
+      $set: set
+    });
     res.status(200).send(updated);
 
   } else {
