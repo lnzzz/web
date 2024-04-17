@@ -122,6 +122,13 @@ app.post('/token', jsonMiddleware, async(req, res) => {
   }
 });
 
+app.get('/youtube/channels', jsonMiddleware, async(req, res) => {
+  const db = client.db(dbName);
+  const channelsCol = db.collection('channels');
+  const channels = await channelsCol.find({ platform: 'youtube' }).toArray();
+  res.status(200).send(channels);
+});
+
 
 app.put('/youtube/channel/:name', jsonMiddleware, async(req, res) => {
   const db = client.db(dbName);
