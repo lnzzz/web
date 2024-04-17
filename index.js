@@ -19,7 +19,7 @@ const app = express();
 app.use(express.static('public'));
 app.use(bodyParser.json());
 
-app.use(jwt({ secret: process.env.SECRET_JWT_KEY, algorithms: ["HS256"] }).unless({ path: ['/', '/token'] }));
+app.use(jwt({ secret: config.jwt.secretKey, algorithms: ["HS256"] }).unless({ path: ['/', '/token'] }));
 
 function adjustDate(date) {
   const newDate = subHours(date, 3);
@@ -115,7 +115,7 @@ app.post('/token', jsonMiddleware, async(req, res) => {
 
   const valid = await authCollection.findOne({ username, password });
   if (valid) {
-    const token = jsonwebtoken.sign({ username: username }, process.env.SECRET_JWT_KEY, { expiresIn: '1h' });
+    const token = jsonwebtoken.sign({ username: username }, config.jwt.secretKey, { expiresIn: '1h' });
     res.json({ token: token });
   } else {
     res.status(401).json({ error: 'Authentication failed' });
