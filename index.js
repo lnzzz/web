@@ -136,7 +136,7 @@ app.put('/youtube/channel/:name', jsonMiddleware, async(req, res) => {
   const channel = await channelsCol.findOne({ platform: 'youtube', name: req.params.name });
   if (channel) {
     const set = {}
-    if (req.body.videoId) {
+    if (req.body.hasOwnProperty("videoId")) {
       set.videoId = req.body.videoId;
     }
 
