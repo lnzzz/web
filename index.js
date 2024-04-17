@@ -1,21 +1,25 @@
 const express = require('express');
-var ejs = require('ejs');
-var fs = require('fs');
-
-const port = 3000;
-
+const { expressjwt:jwt } = require('express-jwt');
 const { subHours } = require('date-fns');
-
 const { MongoClient } = require('mongodb');
+const jsonwebtoken = require('jsonwebtoken');
+const bodyParser = require('body-parser');
+const ejs = require('ejs');
+const fs = require('fs');
 const config = require('config');
 
+const port = 3000;
 const url = config.mongo.url;
 const client = new MongoClient(url);
 const dbName = 'streamstats';
 const service = require('./services/data');
 
 const app = express();
+
 app.use(express.static('public'));
+app.use(bodyParser.json());
+
+app.use(jwt({ secret: process.env.SECRET_JWT_KEY, algorithms: ["HS256"] }).unless({ path: ['/', '/token'] }));
 
 function adjustDate(date) {
   const newDate = subHours(date, 3);
@@ -27,9 +31,15 @@ function getByIndex(index, array, channel) {
   return (item) ? item.totalViewCount : 0;
 }
 
+const jsonMiddleware = (req, res, next) => {
+  if (req.headers['content-type'] !== 'application/json') {
+    return res.status(400).json({ error: 'Content-Type must be application/json' });
+  }
+  next();
+};
+
 
 app.get('/', async (req, res) => {
-    await client.connect();
     const db = client.db(dbName);
     const channelStatsCol = db.collection('channel-stats');  
     const maxPerDay = await service.getMaxDay(channelStatsCol);
@@ -97,6 +107,36 @@ app.get('/', async (req, res) => {
     res.end(htmlRenderized);
 });
 
-app.listen(port, () => {
+app.post('/token', jsonMiddleware, async(req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+  const db = client.db(dbName);
+  const authCollection = db.collection('auth');
+
+  const valid = await authCollection.findOne({ username, password });
+  if (valid) {
+    const token = jsonwebtoken.sign({ username: username }, process.env.SECRET_JWT_KEY, { expiresIn: '1h' });
+    res.json({ token: token });
+  } else {
+    res.status(401).json({ error: 'Authentication failed' });
+  }
+});
+
+
+app.put('/youtube/channel/:name', jsonMiddleware, async(req, res) => {
+  const db = client.db(dbName);
+  const channelsCol = db.collection('channels');
+  const channel = await channelsCol.findOne({ platform: 'youtube', name: req.params.name });
+  if (channel) {
+    const updated = await channelsCol.updateOne({ _id: channel._id }, { $set: { videoId: req.body.videoId }});
+    res.status(200).send(updated);
+
+  } else {
+    res.status(404).json({ message: 'channel_not_found' });
+  }
+});
+
+app.listen(port, async () => {
   console.log(`Server is running on port ${port}`);
+  await client.connect();
 })
