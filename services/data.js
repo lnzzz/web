@@ -2,7 +2,6 @@ const { startOfDay, endOfDay, startOfHour, addHours, subHours } = require('date-
 
 
 const getMaxBetweenHours = async(collection, startHour, endHour, platform=null) => {
-    return 0;
     const startTime = new Date();
     startTime.setHours(startHour, 0, 0, 0);
 
@@ -24,7 +23,7 @@ const getMaxBetweenHours = async(collection, startHour, endHour, platform=null) 
         {
           $group: {
             _id: { channel: "$channel", platform: "$platform" },
-            highestViewCount: { $max: { $toInt: "$viewCount" } }, // Calculate highest viewCount for each group
+            highestViewCount: { $max: "$viewCount" }, // Calculate highest viewCount for each group
             document: { $first: "$$ROOT" } // Keep the entire document of the first element in each group
           }
         },
@@ -56,7 +55,6 @@ const getMaxBetweenHours = async(collection, startHour, endHour, platform=null) 
 }
 
 const getMaxDay = async(collection, platform=null) => {
-    return 0;
     const today = new Date();
     const dayStart = startOfDay(today);
     const dayEnd = endOfDay(today);
@@ -76,7 +74,7 @@ const getMaxDay = async(collection, platform=null) => {
         {
           $group: {
             _id: { channel: "$channel", platform: "$platform" },
-            highestViewCount: { $max: { $toInt: "$viewCount" } },
+            highestViewCount: { $max: "$viewCount" },
             document: { $first: "$$ROOT" }
           }
         },
