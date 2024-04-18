@@ -2,6 +2,7 @@ const { startOfDay, endOfDay, startOfHour, addHours, subHours } = require('date-
 
 
 const getMaxBetweenHours = async(collection, startHour, endHour, platform=null) => {
+    return 0;
     const startTime = new Date();
     startTime.setHours(startHour, 0, 0, 0);
 
@@ -55,7 +56,6 @@ const getMaxBetweenHours = async(collection, startHour, endHour, platform=null) 
 }
 
 const getMaxDay = async(collection, platform=null) => {
-    return 0;
     const today = new Date();
     const dayStart = startOfDay(today);
     const dayEnd = endOfDay(today);
