@@ -18,6 +18,8 @@ const getMaxBetweenHours = async(collection, startHour, endHour, platform=null) 
       match.$match['platform'] = platform;
     }
 
+    console.log(match);
+
     const data = await collection.aggregate([
         match,
         {
