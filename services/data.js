@@ -56,6 +56,7 @@ const getMaxBetweenHours = async(collection, startHour, endHour, platform=null) 
 }
 
 const getMaxDay = async(collection, platform=null) => {
+    return 0;
     const today = new Date();
     const dayStart = startOfDay(today);
     const dayEnd = endOfDay(today);
