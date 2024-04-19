@@ -192,9 +192,9 @@
 										data-bs-content="<a href='<%= youtubeLink %>' target='_blank'><img src='/images/YT.svg' /></a><a href='<%= twitchLink %>' target='_blank'><img class='mt-3' src='/images/Twitch.svg' /></a>"
 									>
 								<% } else if (twitchLink && !youtubeLink) { %>
-									<a class="btn" href="<%= twitchLink %>" target="_blank">
+									<a class="btn nopadded" href="<%= twitchLink %>" target="_blank">
 								<% } else if (!twitchLink && youtubeLink) { %>
-									<a class="btn" href="<%= youtubeLink %>" target="_blank">
+									<a class="btn nopadded" href="<%= youtubeLink %>" target="_blank">
 								<% } %>
 									<img class="c-icon" src="/images/<%= data.values.channels[i] %>.svg" width="50" height="50"/>
 								</a>
