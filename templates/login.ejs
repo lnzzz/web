@@ -1,0 +1,189 @@
+<%
+  var title = "En Directo Stream";
+%>
+	<!DOCTYPE html>
+	<html>
+	<head>
+	    <meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+		<title><%=title%></title>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+		<style>
+      .aclaracion {
+        color: #555;
+        font-weight: bold;
+      }
+			html, body {
+			      height: 100%;
+			    }
+			
+			    body {
+			      background: #111;
+			    }
+			
+			    .wrapper {
+			      min-height: 100%;
+			      display: flex;
+			      flex-direction: column;
+			    }
+			
+			    .content {
+			      flex: 1;
+			    }
+			  .no-select {
+			    user-select: none; /* Standard syntax */
+			    -moz-user-select: none; /* Firefox */
+			    -ms-user-select: none; /* Internet Explorer/Edge */
+			    -webkit-user-select: none; /* Safari */
+			  }
+			
+			  
+			
+			  .feature {
+			    background: #000;
+			    border-radius: 15px;
+			    color: #FFF;
+			    text-align: center;
+			    padding-top: 15px;
+			    height: 100%;
+			  }
+			
+			  .active {
+			    background: violet !important;
+			    color: black !important;
+			  }
+			
+			  .nav-link {
+			    color: violet;
+			  }
+			
+			  .nav-link:hover {
+			    color: pink;
+			  }
+			
+			  .feature h2 {
+			    color: violet;
+			    font-weight: bold;
+			  }
+			  .feature h4 {
+			    text-transform: uppercase;
+			    font-size: 16px;
+			  }
+			
+			  .feature h3 {
+			    text-transform: uppercase;
+			    color: pink;
+			    font-size: 18px;
+			  }
+			
+			  .table thead th {
+			    background: #000 !important;
+			    color: white;
+			    text-align: center;
+			    text-transform: uppercase;
+			    border-bottom: solid 1px #222;
+			  }
+			  .navbar-custom .navbar-nav .nav-link {
+			    border-bottom: none !important;
+			  }
+			
+			  header {
+			    border-bottom: solid 1px violet !important;
+			  }
+			
+			  .table tbody tr td {
+			    border-bottom: solid 1px #222;
+			    background: #111 !important;
+			    color: pink;
+			    text-align: center;
+			  }
+			
+			  footer {
+			    color: violet;
+			  }
+			  
+			
+		</style>
+        <style>
+            html,
+            body {
+                height: 100%;
+            }
+            .form-signin {
+                max-width: 330px;
+                padding: 1rem;
+            }
+            .form-signin .form-floating:focus-within {
+                z-index: 2;
+            }
+            .form-signin input[type="email"] {
+                margin-bottom: -1px;
+                border-bottom-right-radius: 0;
+                border-bottom-left-radius: 0;
+            }
+
+            .form-signin input[type="password"] {
+                margin-bottom: 10px;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            }
+
+            .violet {
+                color: violet;
+            }
+
+            .violet-bg {
+                background-color: violet;
+            }
+
+            .violet-bg:hover {
+                background-color: pink;
+                border: solid 1px violet;
+            }
+            .violet-border {
+                border: solid 1px violet;
+            }
+            .rounded {
+                border-radius: var(--bs-border-radius);
+            }
+            .mt-10 {
+                margin-top: 10px;
+            }
+        </style>
+	</head>
+	<body class="d-flex align-items-center py-4">
+        <main class="form-signin w-100 m-auto">
+            <form action="" method="POST" autocomplete="off">
+              <img class="mb-4 text-center" src="/images/logo.png" alt="" width="150" height="150">
+              <h1 class="h3 mb-3 fw-normal text-white">Login</h1>
+
+              <div class="form-floating">
+                <input type="text" class="form-control" id="floatingInput" name="username" autocomplete="off" placeholder="Usuario">
+                <label for="floatingInput">Usuario</label>
+              </div>
+              <div class="form-floating mt-10">
+                <input type="password" class="form-control rounded" id="floatingPassword" name="password" placeholder="Password">
+                <label for="floatingPassword">Password</label>
+              </div>
+          
+              <div class="form-check text-start my-3">
+                <input class="form-check-input" type="checkbox" name="rememberMe" id="flexCheckDefault">
+                <label class="form-check-label text-white" for="flexCheckDefault">
+                  Recordarme
+                </label>
+              </div>
+              <button class="btn btn-primary w-100 py-2 violet-bg violet-border" type="submit">Log in</button>
+              <p class="mt-5 mb-3 violet">&copy; 2024 En Directo Stream</p>
+            </form>
+          </main>
+	</body>
+</html>
