@@ -21,6 +21,7 @@ const dbName = 'streamstats';
 
 const statsService = require('./services/data');
 const authService = require('./services/auth');
+const channelService = require('./services/channels');
 
 const app = express();
 
@@ -49,6 +50,24 @@ function adjustDate(date) {
 function getByIndex(index, array, channel) {
   const item = (array[index].find(item => item._id.channel.toLowerCase() === channel.toLowerCase()))
   return (item) ? item.totalViewCount : 0;
+}
+
+function getLink(channelName, channelsData, platform, returnDefault=true) {
+
+  const ch = channelsData.find((item) => item.name === channelName);
+  const chP = ch.items.find((item) => item.platform === platform);
+
+  if (platform === 'youtube' && chP.hasOwnProperty('channelUri') && chP.channelUri) {
+    return chP.channelUri;
+  }
+
+  if (chP && platform === 'twitch') {
+    return `https://twitch.tv/${chP.id}`;
+  } else {
+    if (returnDefault === true) {
+      return getLink(channelName, channelsData, 'youtube');
+    }
+  }
 }
 
 const jsonMiddleware = (req, res, next) => {
@@ -111,7 +130,8 @@ app.get('/', async (req, res) => {
 
     if (auth === true) {
       const db = client.db(dbName);
-      const channelStatsCol = db.collection('channel-stats');  
+      const channelStatsCol = db.collection('channel-stats');
+      const channelsCol = db.collection('channels');
       const maxPerDay = await statsService.getMaxDay(channelStatsCol);
       
       const maxPerDayTwitch = await statsService.getMaxDay(channelStatsCol, 'twitch');
@@ -130,6 +150,7 @@ app.get('/', async (req, res) => {
       const maxPerAfternoonYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 14, 18, 'youtube');
 
       const last10 = await statsService.getLast10Grouped(channelStatsCol);
+      const channelData = await channelService.getChannels(channelsCol);
 
       const no_data_str = 'sin datos';
 
@@ -156,6 +177,8 @@ app.get('/', async (req, res) => {
           data: {
               adjustDate: adjustDate,
               getByIndex: getByIndex,
+              getLink: getLink,
+              channelData: channelData,
               totals: {
                   maxDay,
                   maxMorning,
