@@ -149,6 +149,10 @@ app.get('/', async (req, res) => {
       const maxPerAfternoonTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 14, 18, 'twitch');
       const maxPerAfternoonYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 14, 18, 'youtube');
 
+      const maxPerNight = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23);
+      const maxPerNightTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23, 'twitch');
+      const maxPerNightYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23, 'youtube');
+
       const last10 = await statsService.getLast10Grouped(channelStatsCol);
       const channelData = await channelService.getChannels(channelsCol);
 
@@ -169,6 +173,10 @@ app.get('/', async (req, res) => {
       const maxAfternoon = maxPerAfternoon[0] || [no_data_str, 0];
       const maxAfternoonTwitch = maxPerAfternoonTwitch[0] || [no_data_str, 0];
       const maxAfternoonYoutube = maxPerAfternoonYoutube[0] || [no_data_str, 0];
+
+      const maxNight = maxPerNight[0] || [no_data_str, 0];
+      const maxNightTwitch = maxPerNightTwitch[0] || [no_data_str, 0];
+      const maxNightYoutube = maxPerNightYoutube[0] || [no_data_str, 0];
       
       
       const htmlContent = fs.readFileSync('templates/main.ejs', 'utf8');
@@ -191,7 +199,10 @@ app.get('/', async (req, res) => {
                   maxMiddayTwitch,
                   maxMiddayYoutube,
                   maxAfternoonTwitch,
-                  maxAfternoonYoutube
+                  maxAfternoonYoutube,
+                  maxNight,
+                  maxNightTwitch,
+                  maxNightYoutube
               },
               values: last10
           }
