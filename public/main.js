@@ -5,8 +5,12 @@ function display(which) {
     document.querySelectorAll("a.nav-link").forEach((el) => { el.classList.remove("active") });
 
     document.querySelector(`#${which}-btn`).classList.add("active");
-    document.querySelector(`#sum-${which}`).classList.remove('d-none');
-    document.querySelector(`#stats-${which}`).classList.remove('d-none');
+    if (which !== 'reports') {
+        document.querySelector(`#sum-${which}`).classList.remove('d-none');
+        document.querySelector(`#stats-${which}`).classList.remove('d-none');
+    } else {
+        document.querySelector(`#reports`).classList.remove('d-none');
+    }
 }
 
 

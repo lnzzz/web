@@ -1,0 +1,61 @@
+<div class="container-fluid">
+    <h1>Links de Twitter</h1>
+    <div class="row">
+        <div class="col">
+            <h3>M&aacute;ximo del d&iacute;a <img src="/images/maxDia.svg" width="30" height="30" class="pb-2"/></h3>
+            <div class="input-group">
+                <input type="text" id="max-day" class="form-control" value="<%= data.linksData.find((item) => item.linkTag === 'max-day')?.linkValue?.toString() || '' %>"/>
+                <button class="btn btn-danger deleter" id="max-day-btn-delete">Eliminar</button>
+                <button class="btn btn-success saver" id="max-day-btn">Guardar</button>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="max col">
+            <h3>M&aacute;ximo de la ma&ntilde;ana <img src="/images/maxManiana.svg" width="30" height="30" class="pb-2"/></h3>
+            <div class="input-group">
+                <input type="text" id="max-morning" class="form-control" value="<%= data.linksData.find((item) => item.linkTag === 'max-morning')?.linkValue?.toString() || '' %>" />
+                <button class="btn btn-danger deleter" id="max-morning-btn-delete">Eliminar</button>
+                <button class="btn btn-success saver" id="max-morning-btn">Guardar</button>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="max col">
+            <h3>M&aacute;ximo del mediod&iacute;a <img src="/images/maxMediodia.svg" width="30" height="30" class="pb-2"/></h3>
+            <div class="input-group">
+                <input type="text" id="max-midday" class="form-control" value="<%= data.linksData.find((item) => item.linkTag === 'max-midday')?.linkValue?.toString() || '' %>" />
+                <button class="btn btn-danger deleter" id="max-midday-btn-delete">Eliminar</button>
+                <button class="btn btn-success saver" id="max-midday-btn">Guardar</button>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="max col">
+            <h3>M&aacute;ximo de la tarde <img src="/images/maxTarde.svg" width="30" height="30" class="pb-2"/></h3>
+            <div class="input-group">
+                <input type="text" id="max-afternoon" class="form-control" value="<%= data.linksData.find((item) => item.linkTag === 'max-afternoon')?.linkValue?.toString() || '' %>"/>
+                <button class="btn btn-danger deleter" id="max-afternoon-btn-delete">Eliminar</button>
+                <button class="btn btn-success saver" id="max-afternoon-btn">Guardar</button>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="max col">
+            <h3>M&aacute;ximo de la noche <img src="/images/maxNoche.svg" width="30" height="30" class="pb-2"/></h3>
+            <div class="input-group">
+                <input type="text" id="max-night" class="form-control" value="<%= data.linksData.find((item) => item.linkTag === 'max-night')?.linkValue?.toString() || '' %>"/>
+                <button class="btn btn-danger deleter" id="max-night-btn-delete">Eliminar</button>
+                <button class="btn btn-success saver" id="max-night-btn">Guardar</button>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="max col mt-3">
+            <div class="input-group d-flex justify-content-end">
+                <button class="btn btn-danger" id="allDeleter">Eliminar Todos</button>
+                <button class="btn btn-success" id="allSaver">Guardar Todos</button>
+            </div>
+        </div>
+    </div>
+</div>

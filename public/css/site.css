@@ -1,0 +1,154 @@
+.aclaracion {
+    color: #555;
+    font-weight: bold;
+}
+.nopadded {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+html, body {
+    height: 100%;
+}
+
+body {
+    background: #111;
+}
+
+.wrapper {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1;
+}
+
+.no-select {
+    user-select: none; /* Standard syntax */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    -webkit-user-select: none; /* Safari */
+}
+
+.feature {
+    background: #000;
+    border-radius: 15px;
+    color: #FFF;
+    text-align: center;
+    padding-top: 15px;
+    height: 100%;
+}
+
+.active {
+    background: violet !important;
+    color: black !important;
+}
+
+.nav-link {
+    color: violet;
+}
+
+.nav-link:hover {
+    color: pink;
+}
+
+.feature h2 {
+    color: violet;
+    font-weight: bold;
+}
+
+
+.feature h2 a {
+    color: violet;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.feature h2 a:hover {
+    color: pink;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.feature h4 {
+    text-transform: uppercase;
+    font-size: 16px;
+}
+
+.feature h3 {
+    text-transform: uppercase;
+    color: pink;
+    font-size: 18px;
+}
+
+.table thead th {
+    background: #000 !important;
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+    border-bottom: solid 1px #222;
+}
+.navbar-custom .navbar-nav .nav-link {
+    border-bottom: none !important;
+}
+
+header {
+    border-bottom: solid 4px #0013ff;
+    background: rgb(0,0,87);
+    background: -moz-linear-gradient(90deg, rgba(0,0,87,1) 0%, rgba(0,0,0,1) 100%);
+    background: -webkit-linear-gradient(90deg, rgba(0,0,87,1) 0%, rgba(0,0,0,1) 100%);
+    background: linear-gradient(90deg, rgba(0,0,87,1) 0%, rgba(0,0,0,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000057",endColorstr="#000000",GradientType=1);
+
+}
+
+.table tbody tr td {
+    border-bottom: solid 1px #222;
+    background: #111 !important;
+    color: pink;
+    text-align: center;
+}
+
+footer {
+    color: violet;
+}
+
+#icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.parent {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) 4fr;
+    grid-template-rows: 1fr;
+    grid-column-gap: 40px;
+    grid-row-gap: 0px;
+}
+
+.div1 { grid-area: 1 / 1 / 2 / 2; }
+.div2 { grid-area: 1 / 2 / 2 / 3; }
+.div3 { grid-area: 1 / 3 / 2 / 4; }
+
+.div3 img, .div2 img {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+@media screen and (max-width: 780px) {
+    .c-icon { width: 25px; height: 25px; }
+}
+
+.popover-body {
+    background-color: #222 !important;
+    border-radius: 0px 0px 5px 5px;
+}
+
+h1 {
+    color: violet;
+}
+
+h3 {
+    color: white;
+}

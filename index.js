@@ -3,6 +3,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 const config = require('config');
 const uuid = require('uuid').v4;
+const multer = require('multer');
 
 const express = require('express');
 const { expressjwt:jwt } = require('express-jwt');
@@ -22,6 +23,8 @@ const dbName = 'streamstats';
 const statsService = require('./services/data');
 const authService = require('./services/auth');
 const channelService = require('./services/channels');
+const twitterLinksService = require('./services/twitterLinks');
+const reportsService = require('./services/reports');
 
 const app = express();
 
@@ -40,7 +43,19 @@ app.use(session({
   }
 }));
 
-app.use(jwt({ secret: config.jwt.secretKey, algorithms: ["HS256"] }).unless({ path: ['/', '/token', '/login', '/logout'] }));
+app.use(jwt({ secret: config.jwt.secretKey, algorithms: ["HS256"] }).unless({ path: ['/', '/token', '/login', '/logout', '/dashboard', '/upload'] }));
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/reports/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  }
+});
+
+const upload = multer({ storage: storage });
+
 
 function adjustDate(date) {
   const newDate = subHours(date, 3);
@@ -53,7 +68,6 @@ function getByIndex(index, array, channel) {
 }
 
 function getLink(channelName, channelsData, platform, returnDefault=true) {
-
   const ch = channelsData.find((item) => item.name === channelName);
   const chP = ch.items.find((item) => item.platform === platform);
 
@@ -101,7 +115,8 @@ app.post('/login', urlEncodedBodyParser, async(req, res) => {
         res.cookie('remember_me', rememberMeToken, { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true });
     }
     req.session.user = req.body.username;
-    res.redirect('/');
+    res.redirect(req.session.returnTo || '/');
+    delete req.session.returnTo;
   } else {
     res.redirect('/login');
   }
@@ -115,6 +130,53 @@ app.get('/logout', (req, res) => {
           res.redirect('/');
       }
   });
+});
+
+const isAuthenticated = async(req) => {
+  req.session.returnTo = req.originalUrl;
+  let auth = false;
+    if (req.session.user) {
+      auth = true;
+    }
+
+  if (req.cookies && req.cookies.remember_me && req.cookies.remember_me === req.session.rememberMeToken) {
+      auth = true;
+  }
+  return auth;
+}
+
+app.get('/dashboard', async(req, res) => {
+  const loggedIn = await isAuthenticated(req);
+  if (loggedIn) {
+    const webAppToken = jsonwebtoken.sign({ username: 'webApplication' }, config.jwt.secretKey, { expiresIn: '24h' });
+    const db = client.db(dbName);
+    const channelStatsCol = db.collection('channel-stats');
+    const channelsCol = db.collection('channels');
+    const last10 = await statsService.getLast10Grouped(channelStatsCol);
+    const channelData = await channelService.getChannels(channelsCol);
+    const linksData = await twitterLinksService.getLinks(db);
+    const reportsData = await reportsService.getReports(db);
+    const htmlContent = fs.readFileSync('templates/dashboard/dashboard.ejs', 'utf8');
+    const htmlRenderized = ejs.render(htmlContent, {
+          filename: 'dashboard.ejs',
+          data: {
+            adjustDate: adjustDate,
+            getByIndex: getByIndex,
+            getLink: getLink,
+            linksData: linksData,
+            reportsData: reportsData,
+            channelData: channelData,
+            values: last10,
+            webAppToken
+          }
+    });
+    res.cookie('webAppToken', webAppToken, { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: false, secure: true });
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/html');
+    res.end(htmlRenderized);
+  } else {
+    res.redirect('/login'); 
+  }
 });
 
 
@@ -136,6 +198,8 @@ app.get('/', async (req, res) => {
       
       const maxPerDayTwitch = await statsService.getMaxDay(channelStatsCol, 'twitch');
       const maxPerDayYoutube = await statsService.getMaxDay(channelStatsCol, 'youtube');
+      const maxPerNight = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23);
+      
       
       const maxPerMorning = await statsService.getMaxBetweenHours(channelStatsCol, 7, 10);
       const maxPerMorningTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 7, 10, 'twitch');
@@ -149,7 +213,7 @@ app.get('/', async (req, res) => {
       const maxPerAfternoonTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 14, 18, 'twitch');
       const maxPerAfternoonYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 14, 18, 'youtube');
 
-      const maxPerNight = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23);
+      
       const maxPerNightTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23, 'twitch');
       const maxPerNightYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23, 'youtube');
 
@@ -163,6 +227,7 @@ app.get('/', async (req, res) => {
       const maxDayYoutube = maxPerDayYoutube[0] || [no_data_str, 0];
 
       const maxMorning = maxPerMorning[0] || [no_data_str, 0];
+
       const maxMorningTwitch = maxPerMorningTwitch[0] || [no_data_str, 0];
       const maxMorningYoutube = maxPerMorningYoutube[0] || [no_data_str, 0];
 
@@ -170,6 +235,7 @@ app.get('/', async (req, res) => {
       const maxMiddayTwitch = maxPerMiddayTwitch[0] || [no_data_str, 0];
       const maxMiddayYoutube = maxPerMiddayYoutube[0] || [no_data_str, 0];
 
+    
       const maxAfternoon = maxPerAfternoon[0] || [no_data_str, 0];
       const maxAfternoonTwitch = maxPerAfternoonTwitch[0] || [no_data_str, 0];
       const maxAfternoonYoutube = maxPerAfternoonYoutube[0] || [no_data_str, 0];
@@ -177,7 +243,14 @@ app.get('/', async (req, res) => {
       const maxNight = maxPerNight[0] || [no_data_str, 0];
       const maxNightTwitch = maxPerNightTwitch[0] || [no_data_str, 0];
       const maxNightYoutube = maxPerNightYoutube[0] || [no_data_str, 0];
-      
+
+      const maxDayLink = await twitterLinksService.getLink(db, 'max-day');
+      const maxMorningLink = await twitterLinksService.getLink(db, 'max-morning');
+      const maxMiddayLink = await twitterLinksService.getLink(db, 'max-midday');
+      const maxAfternoonLink = await twitterLinksService.getLink(db, 'max-afternoon');
+      const maxNightLink = await twitterLinksService.getLink(db, 'max-night');
+
+      const activeReport = await reportsService.getActiveReport(db);
       
       const htmlContent = fs.readFileSync('templates/main.ejs', 'utf8');
       const htmlRenderized = ejs.render(htmlContent, {
@@ -204,7 +277,15 @@ app.get('/', async (req, res) => {
                   maxNightTwitch,
                   maxNightYoutube
               },
-              values: last10
+              values: last10,
+              links: {
+                maxDayLink,
+                maxMorningLink,
+                maxMiddayLink,
+                maxAfternoonLink,
+                maxNightLink
+              },
+              activeReport
           }
       });
       res.statusCode = 200;
@@ -212,7 +293,7 @@ app.get('/', async (req, res) => {
       res.end(htmlRenderized);
     } else {
       res.redirect('/login');
-    }
+    } 
 });
 
 
@@ -276,6 +357,56 @@ app.put('/youtube/channel/:name', jsonMiddleware, async(req, res) => {
   } else {
     res.status(404).json({ message: 'channel_not_found' });
   }
+});
+
+app.post('/twitter/links', jsonMiddleware, async(req, res) => {
+  try {
+    const db = client.db(dbName);
+    const created = await twitterLinksService.createLink(db, req.body);
+    res.status(200).send({ created: created });
+  } catch (err) {
+    res.status(400).json({ code: 'err_creation', message: err.message });
+  }
+});
+
+app.delete('/twitter/links', jsonMiddleware, async(req, res) => {
+  try {
+    const db = client.db(dbName);
+    const deleted = await twitterLinksService.removeLink(db, req.body);
+    res.status(200).send({ deleted: deleted });
+  } catch (err) {
+    res.status(400).json({ code: 'err_deletion', message: err.message });
+  }
+});
+
+app.post('/reports/publish', jsonMiddleware, async(req, res) => {
+  try {
+    const db = client.db(dbName);
+    const published = await reportsService.publishReport(db, req.body.reportId);
+    res.status(200).send({ published: published });
+  } catch (err) {
+    res.status(400).json({ code: 'err_publish', message: err.message });
+  }
+})
+
+app.post('/reports/unpublish', jsonMiddleware, async(req, res) => {
+  try {
+    const db = client.db(dbName);
+    const unpublished = await reportsService.unpublishReport(db, req.body.reportId);
+    res.status(200).send({ unpublished: unpublished });
+  } catch (err) {
+    res.status(400).json({ code: 'err_unpublish', message: err.message });
+  }
+})
+
+app.post('/upload', upload.single('report-file'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded.' });
+  }
+
+  const db = client.db(dbName);
+  await reportsService.createReport(db, req.file.filename);
+  res.redirect('/dashboard?activeTab=informes');
 });
 
 /* end api */

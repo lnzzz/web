@@ -18,40 +18,97 @@ const getMaxBetweenHours = async(collection, startHour, endHour, platform=null) 
       match.$match['platform'] = platform;
     }
 
+    const group = {
+      $group: {
+        _id: { 
+          channel: "$channel", 
+          platform: "$platform",
+          date: { $dateToString: { format: "%Y-%m-%d %H:%M", date: "$date" } }
+        },
+        highestViewCount: { $max: "$viewCount" }, // Calculate highest viewCount for each group
+        document: { $first: "$$ROOT" } // Keep the entire document of the first element in each group
+      }
+    }
+
+    const project = {
+      $project: {
+        _id: 0,
+        channel: "$_id.channel",
+        platform: "$_id.platform",
+        date: "$_id.date",
+        highestViewCount: 1,
+        document: 1
+      }
+    }
+
     const data = await collection.aggregate([
         match,
-        {
-          $group: {
-            _id: { channel: "$channel", platform: "$platform" },
-            highestViewCount: { $max: "$viewCount" }, // Calculate highest viewCount for each group
-            document: { $first: "$$ROOT" } // Keep the entire document of the first element in each group
-          }
-        },
-        {
-          $project: {
-            _id: 0,
-            channel: "$_id.channel",
-            platform: "$_id.platform",
-            highestViewCount: 1,
-            document: 1
-          }
-        }
+        group,
+        project
       ]).toArray();
 
-      const channelViewCounts = {};
+    const channelViewCounts = {};
 
-      data.forEach(item => {
-        const { channel, highestViewCount } = item;
+
+    data.forEach(item => {
+      const { date, channel, highestViewCount } = item;
+      const xDate = new Date(date);
+      const xDateIndex = xDate.getHours()+":"+String(xDate.getMinutes()).padStart(2, '0');
+
+      if (!channelViewCounts[channel]) {
+        channelViewCounts[channel] = {};
+      }
+
+      if (!channelViewCounts[channel][xDateIndex]) {
+        channelViewCounts[channel][xDateIndex] = highestViewCount;
+      } else {
+        channelViewCounts[channel][xDateIndex] += highestViewCount;
+      }
+    })
+
+    const maxValues = {};
+
+    for (const key in channelViewCounts) {
+      if (Object.hasOwnProperty.call(channelViewCounts, key)) {
+        let max = -Infinity;
         
-        if (channelViewCounts[channel]) {
-          channelViewCounts[channel] += highestViewCount;
-        } else {
-          channelViewCounts[channel] = highestViewCount;
+        for (const subKey in channelViewCounts[key]) {
+          if (Object.hasOwnProperty.call(channelViewCounts[key], subKey)) {
+            maxValues[key] = {};
+            max = Math.max(max, channelViewCounts[key][subKey]);
+            maxValues[key][subKey] = max;
+          }
         }
-      });
-    const sortedChannelViewCounts = Object.entries(channelViewCounts);
-    sortedChannelViewCounts.sort((a, b) => b[1] - a[1]);
-    return sortedChannelViewCounts;
+      }
+    }
+    
+    let maxSubObject = null;
+    let maxValue = -Infinity;
+    let maxKey = null;
+    
+    // Iterate through each property of the main object
+    for (const key in maxValues) {
+      if (Object.hasOwnProperty.call(maxValues, key)) {
+        // Iterate through each subproperty and update the maximum value and sub-object if found
+        for (const subKey in maxValues[key]) {
+          if (Object.hasOwnProperty.call(maxValues[key], subKey)) {
+            if (maxValues[key][subKey] > maxValue) {
+              maxValue = maxValues[key][subKey];
+              maxSubObject = maxValues[key];
+              maxKey = key;
+            }
+          }
+        }
+      }
+    }
+    
+    if (maxKey && maxSubObject) {
+      const subKey = Object.keys(maxSubObject)[0];
+      const arr = [[maxKey, { k: subKey, v: maxSubObject[subKey]}]];
+      return arr;
+    }
+    return false;
+    
 }
 
 const getMaxDay = async(collection, platform=null) => {
