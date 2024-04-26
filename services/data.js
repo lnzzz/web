@@ -162,10 +162,13 @@ const getMaxDay = async(collection, platform=null) => {
 }
 
 const getLast10Grouped = async(channelStatsCol) => {
-    const today = new Date();
+    const currentDate = new Date();
     
+    const todayAt6 = new Date(currentDate.setHours(6, 0, 0, 0));
+
+    const today = new Date();
     const endDate = startOfHour(addHours(today, 1));
-    const startDate = startOfHour(subHours(endDate, 2));
+    const startDate = todayAt6;
 
     const match = {
         $match: {
