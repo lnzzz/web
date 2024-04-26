@@ -49,7 +49,10 @@
 							<h3><%= data.totals.maxDay[0] %></h3>
 							<h2>
 								<% if (data.links.maxDayLink) { %> 
-									<a href="<%= data.links.maxDayLink.linkValue %>" target="_blank"><%= data.totals.maxDay[1] %></a>
+									<%= data.totals.maxDay[1] %><br/>
+									<a class="more" href="<%= data.links.maxDayLink.linkValue %>" target="_blank">
+										<img src="images/Twitter.svg" width="30" height="30" />
+									</a>
 								<% } else { %> 
 									<%= data.totals.maxDay[1] %>
 								<% } %>
@@ -69,7 +72,11 @@
 							<h3><%= data.totals.maxMorning[0] %></h3>
 							<h2>
 							<% if (data.links.maxMorningLink) { %> 
-								<a href="<%= data.links.maxMorningLink.linkValue %>" target="_blank"><%= data.totals.maxMorning[1].v || 0 %></a>
+								<%= data.totals.maxMorning[1].v || 0 %>
+								<br/>
+								<a class="more" href="<%= data.links.maxMorningLink.linkValue %>" target="_blank">
+									<img src="images/Twitter.svg" width="30" height="30" />
+								</a>
 							<% } else { %> 
 								<%= data.totals.maxMorning[1].v || 0 %>
 							<% } %>
@@ -89,7 +96,11 @@
 							<h3><%= data.totals.maxMidday[0] %></h3>
 							<h2>
 								<% if (data.links.maxMiddayLink) { %> 
-									<a href="<%= data.links.maxMiddayLink.linkValue %>" target="_blank"><%= data.totals.maxMidday[1].v || 0 %></a>
+									<%= data.totals.maxMidday[1].v || 0 %>
+									<br/>
+									<a class="more" href="<%= data.links.maxMiddayLink.linkValue %>" target="_blank">
+										<img src="images/Twitter.svg" width="30" height="30" />
+									</a>
 								<% } else { %> 
 									<%= data.totals.maxMidday[1].v || 0 %>
 								<% } %>
@@ -109,7 +120,11 @@
 							<h3><%= data.totals.maxAfternoon[0] %></h3>
 							<h2>
 								<% if (data.links.maxAfternoonLink) { %> 
-									<a href="<%= data.links.maxAfternoonLink.linkValue %>" target="_blank"><%= data.totals.maxAfternoon[1].v || 0 %></a>
+									<%= data.totals.maxAfternoon[1].v || 0 %>
+									<br/>
+									<a class="more" href="<%= data.links.maxAfternoonLink.linkValue %>" target="_blank">
+										<img src="images/Twitter.svg" width="30" height="30" />
+									</a>
 								<% } else { %> 
 									<%= data.totals.maxAfternoon[1].v || 0 %>
 								<% } %>
@@ -129,7 +144,11 @@
 							<h3><%= data.totals.maxNight[0] %></h3>
 							<h2>
 								<% if (data.links.maxNightLink) { %> 
-									<a href="<%= data.links.maxNightLink.linkValue %>" target="_blank"><%= data.totals.maxNight[1].v || 0 %></a>
+									<%= data.totals.maxNight[1].v || 0 %>
+									<br/>
+									<a class="more" href="<%= data.links.maxNightLink.linkValue %>" target="_blank">
+										<img src="images/Twitter.svg" width="30" height="30" />
+									</a>
 								<% } else { %> 
 									<%= data.totals.maxNight[1].v || 0 %>
 								<% } %>
@@ -151,7 +170,11 @@
 							<h3><%= (data.totals.maxDayTwitch[1] > 0) ? data.totals.maxDayTwitch[0] : 'sin datos'  %></h3>
 							<h2>
 								<% if (data.links.maxDayLink) { %> 
-									<a href="<%= data.links.maxDayLink.linkValue %>" target="_blank"><%= data.totals.maxDayTwitch[1] %></a>
+									<%= data.totals.maxDayTwitch[1] %>
+									<br/>
+									<a class="more" href="<%= data.links.maxDayLink.linkValue %>" target="_blank">
+										<img src="images/Twitter.svg" width="30" height="30" />
+									</a>
 								<% } else { %> 
 									<%= data.totals.maxDayTwitch[1] %>
 								<% } %>
@@ -170,7 +193,9 @@
 							<h3><%= data.totals.maxMorningTwitch[0] %></h3>
 							<h2>
 								<% if (data.links.maxMorningLink) { %> 
-									<a href="<%= data.links.maxMorningLink.linkValue %>" target="_blank"><%= data.totals.maxMorningTwitch[1].v || 0 %></a>
+									<%= data.totals.maxMorningTwitch[1].v || 0 %>
+									<br/>
+									<a class="more" href="<%= data.links.maxMorningLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
 								<% } else { %> 
 									<%= data.totals.maxMorningTwitch[1].v || 0 %>
 								<% } %>
@@ -189,7 +214,9 @@
 							<h3><%= data.totals.maxMiddayTwitch[0] %></h3>
 							<h2>
 								<% if (data.links.maxMiddayLink) { %> 
-									<a href="<%= data.links.maxMiddayLink.linkValue %>" target="_blank"><%= data.totals.maxMiddayTwitch[1].v || 0 %></a>
+									<%= data.totals.maxMiddayTwitch[1].v || 0 %>
+									<br/>
+									<a class="more" href="<%= data.links.maxMiddayLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
 								<% } else { %> 
 									<%= data.totals.maxMiddayTwitch[1].v || 0 %>
 								<% } %>
@@ -208,7 +235,9 @@
 							<h3><%= data.totals.maxAfternoonTwitch[0] %></h3>
 							<h2>
 								<% if (data.links.maxAfternoonLink) { %> 
-									<a href="<%= data.links.maxAfternoonLink.linkValue %>" target="_blank"><%= data.totals.maxAfternoonTwitch[1].v || 0 %></a>
+									<%= data.totals.maxAfternoonTwitch[1].v || 0 %>
+									<br/>
+									<a class="more" href="<%= data.links.maxAfternoonLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
 								<% } else { %> 
 									<%= data.totals.maxAfternoonTwitch[1].v || 0 %>
 								<% } %>
@@ -227,7 +256,9 @@
 							<h3><%= data.totals.maxNightTwitch[0] %></h3>
 							<h2>
 								<% if (data.links.maxNightLink) { %> 
-									<a href="<%= data.links.maxNightLink.linkValue %>" target="_blank"><%= data.totals.maxNightTwitch[1].v || 0 %></a>
+									<%= data.totals.maxNightTwitch[1].v || 0 %>
+									<br/>
+									<a class="more" href="<%= data.links.maxNightLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
 								<% } else { %> 
 									<%= data.totals.maxNightTwitch[1].v || 0 %>
 								<% } %>
@@ -248,7 +279,9 @@
 							<h3><%= (data.totals.maxDayYoutube[1] > 0) ? data.totals.maxDayYoutube[0] : 'sin datos'  %></h3>
 							<h2>
 								<% if (data.links.maxDayLink) { %> 
-									<a href="<%= data.links.maxDayLink.linkValue %>" target="_blank"><%= data.totals.maxDayYoutube[1] %></a>
+									<%= data.totals.maxDayYoutube[1] %>
+								<br/>
+								<a class="more" href="<%= data.links.maxDayLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
 								<% } else { %> 
 									<%= data.totals.maxDayYoutube[1] %>
 								<% } %>
@@ -267,7 +300,11 @@
 							<h3><%= data.totals.maxMorningYoutube[0] %></h3>
 							<h2>
 								<% if (data.links.maxMorningLink) { %> 
-									<a href="<%= data.links.maxMorningLink.linkValue %>" target="_blank"><%= data.totals.maxMorningYoutube[1].v || 0 %></a>
+									<%= data.totals.maxMorningYoutube[1].v || 0 %>
+								<br/>
+								<a class="more" href="<%= data.links.maxMorningLink.linkValue %>" target="_blank">
+									<img src="images/Twitter.svg" width="30" height="30" />
+								</a>
 								<% } else { %> 
 									<%= data.totals.maxMorningYoutube[1].v || 0 %>
 								<% } %>
@@ -286,7 +323,9 @@
 							<h3><%= data.totals.maxMiddayYoutube[0] %></h3>
 							<h2>
 								<% if (data.links.maxMiddayLink) { %> 
-									<a href="<%= data.links.maxMiddayLink.linkValue %>" target="_blank"><%= data.totals.maxMiddayYoutube[1].v || 0 %></a>
+									<%= data.totals.maxMiddayYoutube[1].v || 0 %>
+									<br/>
+									<a class="more" href="<%= data.links.maxMiddayLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
 								<% } else { %> 
 									<%= data.totals.maxMiddayYoutube[1].v || 0 %>
 								<% } %>
@@ -305,7 +344,9 @@
 							<h3><%= data.totals.maxAfternoonYoutube[0] %></h3>
 							<h2>
 								<% if (data.links.maxAfternoonLink) { %> 
-									<a href="<%= data.links.maxAfternoonLink.linkValue %>" target="_blank"><%= data.totals.maxAfternoonYoutube[1].v || 0 %></a>
+									<%= data.totals.maxAfternoonYoutube[1].v || 0 %>
+									<br/>
+									<a class="more" href="<%= data.links.maxAfternoonLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
 								<% } else { %> 
 									<%= data.totals.maxAfternoonYoutube[1].v || 0 %>
 								<% } %>
@@ -324,7 +365,9 @@
 							<h3><%= data.totals.maxNightYoutube[0] %></h3>
 							<h2>
 								<% if (data.links.maxNightLink) { %> 
-									<a href="<%= data.links.maxNightLink.linkValue %>" target="_blank"><%= data.totals.maxNightYoutube[1].v || 0 %></a>
+									<%= data.totals.maxNightYoutube[1].v || 0 %>
+									<br/>
+									<a class="more" href="<%= data.links.maxNightLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
 								<% } else { %> 
 									<%= data.totals.maxNightYoutube[1].v || 0 %>
 								<% } %>

@@ -152,3 +152,11 @@ h1 {
 h3 {
     color: white;
 }
+
+a.more {
+    font-size: 20px;
+}
+
+a.more:hover {
+    opacity: 0.5;
+}
