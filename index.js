@@ -201,9 +201,9 @@ app.get('/', async (req, res) => {
       const maxPerNight = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23);
       
       
-      const maxPerMorning = await statsService.getMaxBetweenHours(channelStatsCol, 7, 10);
-      const maxPerMorningTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 7, 10, 'twitch');
-      const maxPerMorningYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 7, 10, 'youtube');
+      const maxPerMorning = await statsService.getMaxBetweenHours(channelStatsCol, 6, 10);
+      const maxPerMorningTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 6, 10, 'twitch');
+      const maxPerMorningYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 6, 10, 'youtube');
 
       const maxPerMidday = await statsService.getMaxBetweenHours(channelStatsCol, 10, 14);
       const maxPerMiddayTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 10, 14, 'twitch');
