@@ -480,6 +480,79 @@
 			<footer class="py-3 my-4 mt-auto">
 				<p class="text-center">&copy; 2024 En Directo Stream</p>
 			</footer>
+
+			<style type="text/css">
+				@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px)  {
+					/* Force table to not be like tables anymore */
+					table, thead, tbody, th, td, tr { 
+						display: block; 
+					}
+					
+					/* Hide table headers (but not display: none;, for accessibility) */
+					thead tr { 
+						position: absolute;
+						top: -9999px;
+						left: -9999px;
+					}
+					
+					tr { 
+						margin-top: 30px;
+					}
+					
+					td { 
+						/* Behave  like a "row" */
+						border: none;
+						border-bottom: 1px solid #eee; 
+						position: relative;
+						padding-left: 70% !important; 
+						height: 60px;
+						padding-top: 15px !important;
+					}
+
+					tr:nth-child(odd) {
+      					background: #ccc !important;
+    				}
+					
+					td:before { 
+						position: absolute;
+						top: 6px;
+						left: 6px;
+						padding-right: 10px; 
+						padding-left: 70px;
+						padding-top: 10px;
+						white-space: nowrap;
+						width: 30%;
+						color: violet;
+						display: inline-block;
+						vertical-align: middle;
+					}
+					td:nth-of-type(2):before + * {
+						display: inline-block;
+						vertical-align: middle; /* Vertically align the text */
+					}
+
+					td:nth-of-type(1) {
+						background: #000 !important;
+					}
+					
+
+					td:nth-of-type(1):before { content: "Hora"; }
+					<% var j=2;
+						for (let i=0; i<data.values.channels.length; i++) { %>
+							td:nth-of-type(<%=j%>):before { 
+								display: inline-block;
+								background-image: url(./images/<%= encodeURIComponent(data.values.channels[i]) %>.svg);
+								background-repeat: no-repeat;
+								vertical-align: middle; /* Vertically align the image */
+								content: "<%= data.values.channels[i] %>";
+								width: 50px; 
+								height: 50px; 
+							}
+					<% j++; 
+						} 
+					%>
+				}
+			</style>
 		</div>
     <script src="/main.js"></script>
 	</body>

@@ -105,7 +105,7 @@ header {
 
 .table tbody tr td {
     border-bottom: solid 1px #222;
-    background: #111 !important;
+    background: #111;
     color: pink;
     text-align: center;
 }
