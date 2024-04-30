@@ -172,3 +172,13 @@ a.more:hover {
     width: 100%;
     table-layout: fixed;
 }
+
+.imageLink {
+    color: violet;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.imageLink:hover {
+    color: pink;
+}

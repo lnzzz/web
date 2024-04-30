@@ -43,7 +43,15 @@ app.use(session({
   }
 }));
 
-app.use(jwt({ secret: config.jwt.secretKey, algorithms: ["HS256"] }).unless({ path: ['/', '/token', '/login', '/logout', '/dashboard', '/upload'] }));
+app.use(jwt({ secret: config.jwt.secretKey, algorithms: ["HS256"] }).unless({ path: [
+  '/', 
+  '/token', 
+  '/login', 
+  '/logout', 
+  '/dashboard', 
+  '/upload', 
+  { url: /^\/images\/twitch\/.*/, methods: ["GET"] }
+]}));
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -65,6 +73,39 @@ function adjustDate(date) {
 function getByIndex(index, array, channel) {
   const item = (array[index].find(item => item._id.channel.toLowerCase() === channel.toLowerCase()))
   return (item) ? item.totalViewCount : 0;
+}
+
+function getDate(index, array, channel) {
+  const item = (array[index].find(item => item._id.channel.toLowerCase() === channel.toLowerCase()))
+  if (!item) return null;
+  return item._id.date;
+}
+
+function getChannelId (channelName, channelsData, platform) {
+  const channelId = channelsData.find((item) => item.name === channelName).items.find((item) => item.platform === platform);
+  if (channelId !== undefined) {
+    return channelId.id;
+  } else {
+    return null;
+  }  
+}
+
+function getFilename(channelId, date, platform) {
+  const realDate = new Date(date);
+  const hours = realDate.getHours() - 3;
+  const minutes = String(realDate.getMinutes()).padStart(2, '0');
+  const year = realDate.getFullYear();
+  const month = realDate.getMonth()+1;
+  const day = realDate.getDate();
+  const filename = channelId + "_" + year + month + day + "_" + hours + "_" + minutes + ".jpg";
+  console.log(filename);
+  const fullPath = `./public/images/${platform}/${filename}`;
+  console.log(fullPath);
+  if (fs.existsSync(fullPath)) {
+    return filename;
+  } else {
+    return null;
+  }
 }
 
 function getLink(channelName, channelsData, platform, returnDefault=true) {
@@ -115,6 +156,7 @@ app.post('/login', urlEncodedBodyParser, async(req, res) => {
         res.cookie('remember_me', rememberMeToken, { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true });
     }
     req.session.user = req.body.username;
+    req.session.isPremium = auth.premium || false;
     res.redirect(req.session.returnTo || '/');
     delete req.session.returnTo;
   } else {
@@ -191,6 +233,7 @@ app.get('/', async (req, res) => {
     }
 
     if (auth === true) {
+      const isPremium = req.session.isPremium;
       const db = client.db(dbName);
       const channelStatsCol = db.collection('channel-stats');
       const channelsCol = db.collection('channels');
@@ -259,6 +302,9 @@ app.get('/', async (req, res) => {
               adjustDate: adjustDate,
               getByIndex: getByIndex,
               getLink: getLink,
+              getChannelId: getChannelId,
+              getDate: getDate,
+              getFilename: getFilename,
               channelData: channelData,
               totals: {
                   maxDay,
@@ -285,7 +331,9 @@ app.get('/', async (req, res) => {
                 maxAfternoonLink,
                 maxNightLink
               },
-              activeReport
+              activeReport,
+              fs: fs,
+              isPremium: isPremium
           }
       });
       res.statusCode = 200;

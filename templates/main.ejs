@@ -432,7 +432,28 @@
 									</td>
 									<% for (var j=0; j<data.values.channels.length; j++) { %>
 										<td>
-											<%= data.getByIndex(i, data.values.twitch, data.values.channels[j]); %>
+											<% if (data.isPremium === true) { %>
+												<%
+													var channelId = data.getChannelId(data.values.channels[j], data.channelData, 'twitch');
+													if (channelId) { 
+														const byIndex = data.getByIndex(i, data.values.twitch, data.values.channels[j]);
+														const date = data.getDate(i, data.values.twitch, data.values.channels[j]);
+														const filename = data.getFilename(data.values.channels[j], date, 'twitch');
+														console.log(filename);
+														if (filename) {
+												%>													
+															<a class="imageLink" href="images/twitch/<%= filename %>" target="_blank">
+																<%= byIndex  %>
+															</a>
+													<% } else { %>
+														<%= data.getByIndex(i, data.values.twitch, data.values.channels[j]); %>
+													<% } %>
+												<%  } else { %>
+													<%= data.getByIndex(i, data.values.twitch, data.values.channels[j]); %>
+												<%  } %>
+											<% } else { %>
+												<%= data.getByIndex(i, data.values.twitch, data.values.channels[j]); %>
+											<% } %>
 										</td>
 									<% } %>
 								</tr>
@@ -463,7 +484,27 @@
 									</td>
 									<% for (var j=0; j<data.values.channels.length; j++) { %>
 										<td>
-											<%= data.getByIndex(i, data.values.youtube, data.values.channels[j]); %>
+											<% if (data.isPremium === true) { %>
+												<%
+													var channelId = data.values.channels[j];
+													if (channelId) { 
+														const byIndex = data.getByIndex(i, data.values.youtube, data.values.channels[j]);
+														const date = data.getDate(i, data.values.youtube, data.values.channels[j]);
+														const filename = data.getFilename(channelId, date, 'youtube');
+														if (filename) {
+												%>													
+															<a class="imageLink" href="images/youtube/<%= filename %>" target="_blank">
+																<%= byIndex  %>
+															</a>
+													<% } else { %>
+														<%= data.getByIndex(i, data.values.youtube, data.values.channels[j]); %>
+													<% } %>
+												<%  } else { %>
+													<%= data.getByIndex(i, data.values.youtube, data.values.channels[j]); %>
+												<%  } %>
+											<% } else { %>
+												<%= data.getByIndex(i, data.values.youtube, data.values.channels[j]); %>
+											<% } %>
 										</td>
 									<% } %>
 								</tr>
