@@ -420,8 +420,6 @@ app.get('/data/query', jsonMiddleware, async(req, res) => {
     platform = null;
   }
 
-  console.log(platform);
-
   const maxDay = await apiService.getMaxDay(channelStatsCol, dateFrom, dateTo, platform, true);
   const maxMorning = await apiService.getMaxBetweenHoursM(channelStatsCol, dateFrom, dateTo, 6, 10, platform);
   const maxMidday = await apiService.getMaxBetweenHoursM(channelStatsCol, dateFrom, dateTo, 10, 14, platform);
