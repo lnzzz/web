@@ -36,6 +36,10 @@
 						<% if (data.activeReport) { %> 
 							<li class="nav-item"><a href="#" id="reports-btn" class="nav-link" onClick="display('reports'); return false;">Informe</a></li>
 						<% } %>
+
+						<% if (data.isPremium) { %>
+							<li class="nav-item"><a href="#" id="query-btn" class="nav-link" onClick="display('query'); return false">Consultas</a></li>
+						<% } %>
 					</div>
 					<li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
 				</ul>
@@ -439,7 +443,6 @@
 														const byIndex = data.getByIndex(i, data.values.twitch, data.values.channels[j]);
 														const date = data.getDate(i, data.values.twitch, data.values.channels[j]);
 														const filename = data.getFilename(data.values.channels[j], date, 'twitch');
-														console.log(filename);
 														if (filename) {
 												%>													
 															<a class="imageLink" href="images/twitch/<%= filename %>" target="_blank">
@@ -516,6 +519,11 @@
 				<div id="reports" class="tbl d-none row g-4 py-5 row-cols-1 row-cols-lg-3">
 					<embed src="reports/<%= data.activeReport.fileName %>" type="application/pdf" style="width: 100%" width="100%" height="600px"/>
 				</div>
+				<% } %>
+
+				<% if (data.isPremium) { %>
+					<%- include('templates/premium-query'); %>
+					<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 				<% } %>
 			</div>
 			<footer class="py-3 my-4 mt-auto">
@@ -595,6 +603,9 @@
 				}
 			</style>
 		</div>
+	<% if (data.isPremium) { %>
+	<script src="/prem.js"></script>
+	<% } %>
     <script src="/main.js"></script>
 	</body>
 	</html>

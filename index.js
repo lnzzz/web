@@ -25,6 +25,7 @@ const authService = require('./services/auth');
 const channelService = require('./services/channels');
 const twitterLinksService = require('./services/twitterLinks');
 const reportsService = require('./services/reports');
+const apiService = require('./services/api');
 
 const app = express();
 
@@ -98,9 +99,7 @@ function getFilename(channelId, date, platform) {
   const month = realDate.getMonth()+1;
   const day = realDate.getDate();
   const filename = channelId + "_" + year + month + day + "_" + hours + "_" + minutes + ".jpg";
-  console.log(filename);
   const fullPath = `./public/images/${platform}/${filename}`;
-  console.log(fullPath);
   if (fs.existsSync(fullPath)) {
     return filename;
   } else {
@@ -233,6 +232,7 @@ app.get('/', async (req, res) => {
     }
 
     if (auth === true) {
+      const webAppToken = jsonwebtoken.sign({ username: 'webApplication' }, config.jwt.secretKey, { expiresIn: '24h' });
       const isPremium = req.session.isPremium;
       const db = client.db(dbName);
       const channelStatsCol = db.collection('channel-stats');
@@ -333,10 +333,12 @@ app.get('/', async (req, res) => {
               },
               activeReport,
               fs: fs,
-              isPremium: isPremium
+              isPremium: isPremium,
+              webAppToken
           }
       });
       res.statusCode = 200;
+      res.cookie('webAppToken', webAppToken, { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: false, secure: true });
       res.setHeader('Content-Type', 'text/html');
       res.end(htmlRenderized);
     } else {
@@ -405,6 +407,82 @@ app.put('/youtube/channel/:name', jsonMiddleware, async(req, res) => {
   } else {
     res.status(404).json({ message: 'channel_not_found' });
   }
+});
+
+app.get('/data/query', jsonMiddleware, async(req, res) => {
+  const db = client.db(dbName);
+  const channelStatsCol = db.collection('channel-stats');
+
+  const dateFrom = req.query.dateFrom;
+  const dateTo = req.query.dateTo;
+  let platform = req.query.platform;
+  if (platform === 'all') {
+    platform = null;
+  }
+
+  console.log(platform);
+
+  const maxDay = await apiService.getMaxDay(channelStatsCol, dateFrom, dateTo, platform, true);
+  const maxMorning = await apiService.getMaxBetweenHoursM(channelStatsCol, dateFrom, dateTo, 6, 10, platform);
+  const maxMidday = await apiService.getMaxBetweenHoursM(channelStatsCol, dateFrom, dateTo, 10, 14, platform);
+  const maxAfternoon = await apiService.getMaxBetweenHoursM(channelStatsCol, dateFrom, dateTo, 14, 18, platform);
+  const maxNight = await apiService.getMaxBetweenHoursM(channelStatsCol, dateFrom, dateTo, 18, 23, platform);
+
+  const daysGrouped = await apiService.getGrouped(channelStatsCol, dateFrom, dateTo);
+  
+  res.status(200).send({
+    maxDay,
+    maxMorning,
+    maxMidday,
+    maxAfternoon,
+    maxNight,
+    daysGrouped
+  });
+})
+
+app.get('/data/totals', jsonMiddleware, async (req, res) => {
+  const db = client.db(dbName);
+  const channelStatsCol = db.collection('channel-stats');
+  const maxDay = await apiService.getMaxDay(channelStatsCol, null, null, null, null);
+  const maxMorning = await apiService.getMaxBetweenHours(channelStatsCol, 6, 10);
+  const maxMidday = await apiService.getMaxBetweenHours(channelStatsCol, 10, 14);
+  const maxAfternoon = await apiService.getMaxBetweenHours(channelStatsCol, 14, 18);
+  const maxNight = await apiService.getMaxBetweenHours(channelStatsCol, 18, 23);
+
+  const tMaxDay = await apiService.getMaxDay(channelStatsCol, null, null, 'twitch', null);
+  const tMaxMorning = await apiService.getMaxBetweenHours(channelStatsCol, 6, 10, 'twitch');
+  const tMaxMidday = await apiService.getMaxBetweenHours(channelStatsCol, 10, 14, 'twitch');
+  const tMaxAfternoon = await apiService.getMaxBetweenHours(channelStatsCol, 14, 18, 'twitch');
+  const tMaxNight = await apiService.getMaxBetweenHours(channelStatsCol, 18, 23, 'twitch');
+
+  const ytMaxDay = await apiService.getMaxDay(channelStatsCol, null, null, 'youtube', null);
+  const ytMaxMorning = await apiService.getMaxBetweenHours(channelStatsCol, 6, 10, 'youtube');
+  const ytMaxMidday = await apiService.getMaxBetweenHours(channelStatsCol, 10, 14, 'youtube');
+  const ytMaxAfternoon = await apiService.getMaxBetweenHours(channelStatsCol, 14, 18, 'youtube');
+  const ytMaxNight = await apiService.getMaxBetweenHours(channelStatsCol, 18, 23, 'youtube');
+  res.status(200).send({
+    totals: {
+      maxDay: maxDay,
+      maxMorning: maxMorning,
+      maxMidday: maxMidday,
+      maxAfternoon: maxAfternoon,
+      maxNight: maxNight
+    },
+    twitch: {
+      maxDay: tMaxDay,
+      maxMorning: tMaxMorning,
+      maxMidday: tMaxMidday,
+      maxAfternoon: tMaxAfternoon,
+      maxNight: tMaxNight
+    },
+    youtube: {
+      maxDay: ytMaxDay,
+      maxMorning: ytMaxMorning,
+      maxMidday: ytMaxMidday,
+      maxAfternoon: ytMaxAfternoon,
+      maxNight: ytMaxNight
+    }
+  })
 });
 
 app.post('/twitter/links', jsonMiddleware, async(req, res) => {

@@ -1,0 +1,41 @@
+<div id="stats-query" class="stats">
+  <div >
+        <h3>Rango de fechas</h3>
+        <div class="input-group">
+            <input type="date" class="form-control" id="date-from"/>
+            <input type="date" class="form-control" id="date-to"/>
+            <select class="form-control" id="platform">
+                <option value="">Plataforma</option>
+                <option value="all">Todas</option>
+                <option value="twitch">Twitch</option>
+                <option value="youtube">Youtube</option>
+            </select>
+            <button class="btn btn-success querier" id="querier-btn">Consultar</button>
+        </div>
+  </div>
+
+  <div id="switcher" class="mt-3">
+    <div id="switcher-controls"></div>
+    <div id="sum-query" class="stats row g-4 py-5 row-cols-1 row-cols-lg-5 gx-2"></div>
+    <div id="day-query"></div>
+  </div>
+</div>
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <!-- Toast -->
+    <div id="toast-success" class="toast bg-success text-white hide" role="alert" aria-live="assertive" aria-atomic="true">
+        
+      <div class="toast-body">
+        <span id="toast-body-content"></span>
+      </div>
+    </div>
+</div>
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 12">
+    <!-- Toast -->
+    <div id="toast-error" class="toast bg-danger text-white hide" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-body">
+        <span id="toast-body-content-error"></span>
+      </div>
+    </div>
+</div>
