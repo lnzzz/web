@@ -431,31 +431,40 @@ const getGrouped = async(channelStatsCol, dateFrom, dateTo) => {
 
     const parsedTotals = totals.reduce((acc, curr) => {
         const { date } = curr._id;
-        if (!acc[date]) {
-          acc[date] = [];
+        const realDate = new Date(date);
+        if (realDate.getDate() === datesBetween[i].getDate() && realDate.getMonth() === datesBetween[i].getMonth() && realDate.getFullYear() === datesBetween[i].getFullYear()) {
+          if (!acc[date]) {
+            acc[date] = [];
+          }
+          acc[date].push(curr);
+          return acc;
         }
-        acc[date].push(curr);
-        return acc;
       }, {});
     
     const channels = [...new Set(totals.map(item => item._id.channel))];
     
     const parsedTwitch = twitch.reduce((acc, curr) => {
         const { date } = curr._id;
+        const realDate = new Date(date);
+        if (realDate.getDate() === datesBetween[i].getDate() && realDate.getMonth() === datesBetween[i].getMonth() && realDate.getFullYear() === datesBetween[i].getFullYear()) {
+          if (!acc[date]) {
+            acc[date] = [];
+          }
+          acc[date].push(curr);
+          return acc;
+        }
+      }, {});
+
+    const parsedYoutube = youtube.reduce((acc, curr) => {
+      const { date } = curr._id;
+      const realDate = new Date(date);
+      if (realDate.getDate() === datesBetween[i].getDate() && realDate.getMonth() === datesBetween[i].getMonth() && realDate.getFullYear() === datesBetween[i].getFullYear()) {
         if (!acc[date]) {
           acc[date] = [];
         }
         acc[date].push(curr);
         return acc;
-      }, {});
-
-    const parsedYoutube = youtube.reduce((acc, curr) => {
-      const { date } = curr._id;
-      if (!acc[date]) {
-        acc[date] = [];
       }
-      acc[date].push(curr);
-      return acc;
     }, {});
 
     const formatted = format(datesBetween[i], 'dd-MM-yyyy');
