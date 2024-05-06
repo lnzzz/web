@@ -90,7 +90,6 @@ const drawSelector = async(data) => {
     let selectorHTML = `<select id='switcher-trigger' class='form-control'>`;
     for (const i in data.maxDay) {
         selectorHTML += `<option value="${i}">${i}</option>`;
-        selectorHTML += `<option value="probando">probando</option>`;
     }
     selectorHTML += `</select>`;
     document.querySelector("#switcher-controls").innerHTML = selectorHTML;
