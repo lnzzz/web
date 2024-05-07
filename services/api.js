@@ -504,7 +504,7 @@ const getAccumulated = async(collection, dateFrom, dateTo, platform) => {
     match,
     {
       $group: {
-        _id: { channel: "$channel", platform: "$platform", date: "$date" },
+        _id: { channel: "$channel", platform: "$platform" },
         highestViewCount: { $max: "$viewCount" },
         document: { $first: "$$ROOT" }
       }
