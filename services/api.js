@@ -477,7 +477,6 @@ const getGrouped = async(channelStatsCol, dateFrom, dateTo) => {
 
 const getAccumulated = async(collection, dateFrom, dateTo, platform) => {
   const today = new Date();
-    
   const startDate = (dateFrom) ? new Date(dateFrom) : today;
   const dayStart = startOfDay(startDate);
   const endDate = (dateTo) ? new Date(dateTo) : today;
@@ -490,58 +489,48 @@ const getAccumulated = async(collection, dateFrom, dateTo, platform) => {
     endDate.setDate(endDate.getDate() + 1);
   }
 
-  
-  let datesBetween = eachDayOfInterval({ start: dayStart, end: endDate });
-
-  if (datesBetween.length === 1) {
-    datesBetween = [datesBetween[0]];
+  const match = {
+    $match: {
+      date: { $gte: startDate, $lte: endDate },
+      viewCount: { $ne: 0 }
+    }
   }
 
-  let result = {};
+  if (platform) {
+    match.$match['platform'] = platform;
+  }
 
-
-    const match = {
-      $match: {
-        date: { $gte: startDate, $lte: endDate },
-        viewCount: { $ne: 0 }
+  const data = await collection.aggregate([
+    match,
+    {
+      $group: {
+        _id: { channel: "$channel", platform: "$platform", date: "$date" },
+        highestViewCount: { $max: "$viewCount" },
+        document: { $first: "$$ROOT" }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        channel: "$_id.channel",
+        platform: "$_id.platform",
+        highestViewCount: 1,
+        document: 1
       }
     }
+  ]).toArray();
 
-    if (platform) {
-      match.$match['platform'] = platform;
-    }
+  const channelViewCounts = {};
 
-    const data = await collection.aggregate([
-      match,
-      {
-        $group: {
-          _id: { channel: "$channel", platform: "$platform" },
-          highestViewCount: { $max: "$viewCount" },
-          document: { $first: "$$ROOT" }
-        }
-      },
-      {
-        $project: {
-          _id: 0,
-          channel: "$_id.channel",
-          platform: "$_id.platform",
-          highestViewCount: 1,
-          document: 1
-        }
+  data.forEach(item => {
+      const { channel, highestViewCount } = item;
+      if (channelViewCounts[channel]) {
+        channelViewCounts[channel] += highestViewCount;
+      } else {
+        channelViewCounts[channel] = highestViewCount;
       }
-    ]).toArray();
+  });
 
-    const channelViewCounts = {};
-
-    data.forEach(item => {
-        const { channel, highestViewCount } = item;
-        if (channelViewCounts[channel]) {
-          channelViewCounts[channel] += highestViewCount;
-        } else {
-          channelViewCounts[channel] = highestViewCount;
-        }
-    });
-    
   const sortedChannelViewCounts = Object.entries(channelViewCounts);
   sortedChannelViewCounts.sort((a, b) => b[1] - a[1]);
   return sortedChannelViewCounts;
