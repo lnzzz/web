@@ -159,6 +159,9 @@ const resetSwitcher = async() => {
 }
 
 const drawMax = async(text, platform, id, dateIdx, data, image, range) => {
+    const maxChannel = (data[dateIdx] && data[dateIdx][0]) ? data[dateIdx][0] : data[dateIdx].channel;
+    const maxValue = (data[dateIdx] && data[dateIdx][1]) ? data[dateIdx][1] : data[dateIdx].value;
+
     let maxHTML = `
         <div class="col" id='${id}'>
             <div class="feature d-flex flex-column">
@@ -166,9 +169,9 @@ const drawMax = async(text, platform, id, dateIdx, data, image, range) => {
                     <img src="/images/${image}" width="50" height="50"/>
                 </div>
                 <h4>${text}<br/><span class="aclaracion">${range}</span></h4>
-                <h3>${data[dateIdx][0] || data[dateIdx].channel}</h3>
+                <h3>${maxChannel}</h3>
                 <h2>
-                    ${data[dateIdx][1] || data[dateIdx].value}
+                    ${maxValue}
                 </h2>
                 <div class="d-flex mt-auto justify-content-end px-3 pb-3">`
     switch(platform) {
@@ -301,27 +304,27 @@ const drawData = async (eventData) => {
 
     await resetStats();
 
-    if (eventData.data.maxDay) {
+    if (eventData.data.maxDay && eventData.data.maxDay[eventData.dateIdx]) {
         await drawMax('M&aacute;x. del d&iacute;a', platformKey, 'max-day', eventData.dateIdx, eventData.data.maxDay, 'maxDia.svg', '24 hs');
     }
 
-    if (eventData.data.maxMorning) {
+    if (eventData.data.maxMorning && eventData.data.maxMorning[eventData.dateIdx]) {
         await drawMax('M&aacute;x. de la ma&ntilde;ana', platformKey, 'max-morning', eventData.dateIdx, eventData.data.maxMorning, 'maxManiana.svg', '06:00 a 10:00');
     }
 
-    if (eventData.data.maxMidday) {
+    if (eventData.data.maxMidday && eventData.data.maxMidday[eventData.dateIdx]) {
         await drawMax('M&aacute;x. del mediod&iacute;a', platformKey, 'max-midday', eventData.dateIdx, eventData.data.maxMidday, 'maxMediodia.svg', '10:00 a 14:00');
     }
 
-    if (eventData.data.maxAfternoon) {
+    if (eventData.data.maxAfternoon && eventData.data.maxAfternoon[eventData.dateIdx]) {
         await drawMax('M&aacute;x. de la tarde', platformKey, 'max-afternoon', eventData.dateIdx, eventData.data.maxAfternoon, 'maxTarde.svg', '14:00 a 18:00');
     }
 
-    if (eventData.data.maxNight) {
+    if (eventData.data.maxNight && eventData.data.maxNight[eventData.dateIdx]) {
         await drawMax('M&aacute;x. de la noche', platformKey, 'max-night', eventData.dateIdx, eventData.data.maxNight, 'maxNoche.svg', '18:00 a 23:00');
     }
 
-    if (eventData.data.daysGrouped) {
+    if (eventData.data.daysGrouped && eventData.data.daysGrouped[eventData.dateIdx]) {
        if (platformKey === 'all') platformKey = 'totals';
        await drawDays(platformKey, eventData.dateIdx, eventData.data.daysGrouped);
     }
