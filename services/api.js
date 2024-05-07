@@ -504,7 +504,11 @@ const getAccumulated = async(collection, dateFrom, dateTo, platform) => {
     match,
     {
       $group: {
-        _id: { channel: "$channel", platform: "$platform" },
+        _id: { 
+          channel: "$channel", 
+          platform: "$platform",
+          date: { $dateToString: { format: "%Y-%m-%d %H:%M", date: "$date" } }
+        },
         highestViewCount: { $max: "$viewCount" },
         document: { $first: "$$ROOT" }
       }
