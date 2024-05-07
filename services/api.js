@@ -518,6 +518,7 @@ const getAccumulated = async(collection, dateFrom, dateTo, platform) => {
         _id: 0,
         channel: "$_id.channel",
         platform: "$_id.platform",
+        date: "$_id.date",
         highestViewCount: 1,
         document: 1
       }
