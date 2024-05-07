@@ -23,10 +23,11 @@ const domReady = (callBack) => {
 const successToast = new bootstrap.Toast(document.getElementById('toast-success'));
 const errorToast = new bootstrap.Toast(document.getElementById('toast-error'));
 
-const runQuery = async(dateFromInput, dateToInput, platformSelect) => {
+const runQuery = async(dateFromInput, dateToInput, platformSelect, opTypeSelect) => {
     if (!dateFromInput.value || dateFromInput.value === '') throw new Error('Fecha de inicio invalida.')
     if (!dateToInput.value || dateToInput.value === '') throw new Error('Fecha de fin invalida.');
     if (!platformSelect.value || platformSelect.value === '') throw new Error('Plataforma invalida.');
+    if (!opTypeSelect.value || opTypeSelect.value === '') throw new Error('Tipo de operación invalido.');
     
     const queryParams = {
         dateFrom: dateFromInput.value,
@@ -35,7 +36,14 @@ const runQuery = async(dateFromInput, dateToInput, platformSelect) => {
     };
 
     const queryString = new URLSearchParams(queryParams).toString();
-    const url = '/data/query';
+
+    let url;
+    if (opTypeSelect.value === 'full_data') {
+        url = '/data/query';
+    }
+    if (opTypeSelect.value === 'accum_channel') {
+        url = '/data/accum-channel'
+    }
     const fullUrl = `${url}?${queryString}`;
     const options = {
         method: 'GET',
@@ -53,6 +61,12 @@ const runQuery = async(dateFromInput, dateToInput, platformSelect) => {
     }
 }
 
+function adjustDate(date) {
+    const newDate = new Date(date);
+    newDate.setHours(newDate.getHours() - 3);
+    return newDate.getHours();
+}
+
 
 
 domReady(() => {
@@ -60,13 +74,29 @@ domReady(() => {
     const dateFromInput = document.querySelector("#date-from");
     const dateToInput = document.querySelector("#date-to");
     const platformSelect = document.querySelector("#platform");
+    const opTypeSelect = document.querySelector("#data-type");
     querierBtn.addEventListener('click', async (event) => {
         event.preventDefault();
         try {
             querierBtn.setAttribute('disabled', 'disabled');
             querierBtn.innerHTML = "Consultando...";
-            const data = await runQuery(dateFromInput, dateToInput, platformSelect);
-            await drawSelector(await data.json());
+            const data = await runQuery(dateFromInput, dateToInput, platformSelect, opTypeSelect);
+            if (opTypeSelect.value === 'full_data') {
+                await drawSelector(await data.json());
+            }
+
+            if (opTypeSelect.value === 'accum_channel') {
+                await resetSwitcher();
+                await resetMaxes([
+                    'max-day', 
+                    'max-morning', 
+                    'max-midday', 
+                    'max-afternoon', 
+                    'max-night'
+                ]);
+                await resetStats();
+                await drawAccumulated(await data.json());
+            }
             querierBtn.removeAttribute('disabled');
             querierBtn.innerHTML = "Consultar";
         } catch (error) {
@@ -82,11 +112,28 @@ domReady(() => {
     const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl, { html: true }));
 });
 
-const drawSelector = async(data) => {
-    const selectElement = document.querySelector("#switcher-trigger");
-    if (selectElement) {
-        document.querySelector("#switcher-trigger").remove();
+const drawAccumulated = async (data) => {
+    let accumHTML = `<div class="mt-3 mb-3">
+        <button class='btn btn-success' onClick="downloadCSV('stats-table', 'table_data_accumulated.csv');">Descargar como CSV</button>
+        <button class='btn btn-success' onClick="downloadExcel('stats-table', 'table_data_accumulated.xlsx');">Descargar como Excel</button>
+    </div>` 
+    accumHTML += `<table id='stats-table' class='table'>`;
+    accumHTML += `<thead><th>Canal</th><th>Acumulado</th></thead>
+    `;
+    accumHTML += `<tbody>`;
+    for (let i in data) {
+        accumHTML += `<tr>`;
+        accumHTML += `<td>${data[i][0]}</td>`;
+        accumHTML += `<td>${data[i][1]}</td>`;
+        accumHTML += `</tr>`;
     }
+    accumHTML += `</tbody>`;
+    accumHTML += `</table>`;
+    document.querySelector("#day-query").innerHTML = accumHTML;
+}
+
+const drawSelector = async(data) => {
+    await resetSwitcher();
     let selectorHTML = `<select id='switcher-trigger' class='form-control'>`;
     for (const i in data.maxDay) {
         selectorHTML += `<option value="${i}">${i}</option>`;
@@ -104,14 +151,21 @@ const drawSelector = async(data) => {
     switcher.dispatchEvent(new Event("change"));
 }
 
-const drawMax = async(text, platform, id, dateIdx, data, image) => {
+const resetSwitcher = async() => {
+    const selectElement = document.querySelector("#switcher-trigger");
+    if (selectElement) {
+        document.querySelector("#switcher-trigger").remove();
+    }
+}
+
+const drawMax = async(text, platform, id, dateIdx, data, image, range) => {
     let maxHTML = `
         <div class="col" id='${id}'>
             <div class="feature d-flex flex-column">
                 <div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
                     <img src="/images/${image}" width="50" height="50"/>
                 </div>
-                <h4>${text}<br/><span class="aclaracion">24hs</span></h4>
+                <h4>${text}<br/><span class="aclaracion">${range}</span></h4>
                 <h3>${data[dateIdx][0] || data[dateIdx].channel}</h3>
                 <h2>
                     ${data[dateIdx][1] || data[dateIdx].value}
@@ -159,7 +213,6 @@ function downloadCSV(tableId, filename) {
 
         csvContent += rowData + '\n';
     });
-    console.log(csvContent);
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -213,8 +266,7 @@ const drawDays = async(dataKey, dateIdx, data) => {
         daysHTML += `<tbody>`;
             for (const i in data[dateIdx][dataKey]) {
                 daysHTML += `<tr>`; 
-                    daysHTML += `<td>${splitDate(i)}</td>`;
-
+                    daysHTML += `<td>${adjustDate(i) + ":" + String(new Date(i).getMinutes()).padStart(2, '0')}</td>`;
                     for (let j=0; j<data[dateIdx].channels.length; j++) {
                         daysHTML += `<td>${getByIndex(i, data[dateIdx][dataKey], data[dateIdx].channels[j]) }</td>`
                     }
@@ -250,23 +302,23 @@ const drawData = async (eventData) => {
     await resetStats();
 
     if (eventData.data.maxDay) {
-        await drawMax('M&aacute;x. del d&iacute;a', platformKey, 'max-day', eventData.dateIdx, eventData.data.maxDay, 'maxDia.svg');
+        await drawMax('M&aacute;x. del d&iacute;a', platformKey, 'max-day', eventData.dateIdx, eventData.data.maxDay, 'maxDia.svg', '24 hs');
     }
 
     if (eventData.data.maxMorning) {
-        await drawMax('M&aacute;x. de la ma&ntilde;ana', platformKey, 'max-morning', eventData.dateIdx, eventData.data.maxMorning, 'maxManiana.svg');
+        await drawMax('M&aacute;x. de la ma&ntilde;ana', platformKey, 'max-morning', eventData.dateIdx, eventData.data.maxMorning, 'maxManiana.svg', '06:00 a 10:00');
     }
 
     if (eventData.data.maxMidday) {
-        await drawMax('M&aacute;x. del mediod&iacute;a', platformKey, 'max-midday', eventData.dateIdx, eventData.data.maxMidday, 'maxMediodia.svg');
+        await drawMax('M&aacute;x. del mediod&iacute;a', platformKey, 'max-midday', eventData.dateIdx, eventData.data.maxMidday, 'maxMediodia.svg', '10:00 a 14:00');
     }
 
     if (eventData.data.maxAfternoon) {
-        await drawMax('M&aacute;x. de la tarde', platformKey, 'max-afternoon', eventData.dateIdx, eventData.data.maxAfternoon, 'maxTarde.svg');
+        await drawMax('M&aacute;x. de la tarde', platformKey, 'max-afternoon', eventData.dateIdx, eventData.data.maxAfternoon, 'maxTarde.svg', '14:00 a 18:00');
     }
 
     if (eventData.data.maxNight) {
-        await drawMax('M&aacute;x. de la noche', platformKey, 'max-night', eventData.dateIdx, eventData.data.maxNight, 'maxNoche.svg');
+        await drawMax('M&aacute;x. de la noche', platformKey, 'max-night', eventData.dateIdx, eventData.data.maxNight, 'maxNoche.svg', '18:00 a 23:00');
     }
 
     if (eventData.data.daysGrouped) {

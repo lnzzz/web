@@ -409,6 +409,21 @@ app.put('/youtube/channel/:name', jsonMiddleware, async(req, res) => {
   }
 });
 
+app.get('/data/accum-channel', jsonMiddleware, async(req, res) => {
+  const db = client.db(dbName);
+  const channelStatsCol = db.collection('channel-stats');
+
+  const dateFrom = req.query.dateFrom;
+  const dateTo = req.query.dateTo;
+  let platform = req.query.platform;
+  if (platform === 'all') {
+    platform = null;
+  }
+
+  const accumulated = await apiService.getAccumulated(channelStatsCol, dateFrom, dateTo, platform);
+  res.status(200).send(accumulated);
+});
+
 app.get('/data/query', jsonMiddleware, async(req, res) => {
   const db = client.db(dbName);
   const channelStatsCol = db.collection('channel-stats');
