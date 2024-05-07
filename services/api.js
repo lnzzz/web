@@ -513,20 +513,11 @@ const getAccumulated = async(collection, dateFrom, dateTo, platform) => {
       }
     },
     {
-      $group: {
-        _id: {
-          channel: "$_id.channel",
-          platform: "$_id.platform"
-        },
-        highestViewCountPerDay: { $max: "$highestViewCount" }
-      }
-    },
-    {
       $project: {
         _id: 0,
         channel: "$_id.channel",
         platform: "$_id.platform",
-        highestViewCountPerDay: 1,
+        highestViewCount: 1,
         document: 1
       }
     }
@@ -535,11 +526,11 @@ const getAccumulated = async(collection, dateFrom, dateTo, platform) => {
   const channelViewCounts = {};
 
   data.forEach(item => {
-      const { channel, highestViewCountPerDay } = item;
+      const { channel, highestViewCount } = item;
       if (channelViewCounts[channel]) {
-        channelViewCounts[channel] += highestViewCountPerDay;
+        channelViewCounts[channel] += highestViewCount;
       } else {
-        channelViewCounts[channel] = highestViewCountPerDay;
+        channelViewCounts[channel] = highestViewCount;
       }
   });
 
