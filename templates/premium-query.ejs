@@ -1,21 +1,31 @@
 <div id="stats-query" class="stats">
-  <div >
-        <h3>Rango de fechas</h3>
-        <div class="input-group">
+        <div class="">
+          <h3>Rango de fechas</h3>
+          <div class="input-group mt-3">
+            <span class="input-group-text">Fecha desde:</span>
             <input type="date" class="form-control" id="date-from"/>
-            <input type="date" class="form-control" id="date-to"/>
-            <select class="form-control" id="platform">
-                <option value="">Plataforma</option>
-                <option value="all">Todas</option>
-                <option value="twitch">Twitch</option>
-                <option value="youtube">Youtube</option>
-            </select>
-            <select class="form-control" id="data-type">
-              <option value="">Tipo de operaci&oacute;n</option>
-              <option value="full_data">Datos</option>
-              <option value="accum_channel">Acumulados por canal</option>
-            </select>
-            <button class="btn btn-success querier" id="querier-btn">Consultar</button>
+          </div>
+          <div class="input-group mt-3">
+              <span class="input-group-text">Fecha hasta:</span>
+              <input type="date" class="form-control" id="date-to"/>
+          </div>
+          <div class="input-group mt-3">
+              <select class="form-select" id="platform">
+                  <option value="">Plataforma</option>
+                  <option value="all">Todas</option>
+                  <option value="twitch">Twitch</option>
+                  <option value="youtube">Youtube</option>
+              </select>
+              <select class="form-select" id="data-type">
+                <option value="">Tipo de operaci&oacute;n</option>
+                <option value="full_data">Datos</option>
+                <option value="accum_channel">Acumulados por canal</option>
+              </select>
+              
+          </div>
+          <div class="input">
+            <button class="btn btn-success querier mt-3" id="querier-btn">Consultar</button>
+          </div>
         </div>
   </div>
 

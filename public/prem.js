@@ -134,7 +134,7 @@ const drawAccumulated = async (data) => {
 
 const drawSelector = async(data) => {
     await resetSwitcher();
-    let selectorHTML = `<select id='switcher-trigger' class='form-control'>`;
+    let selectorHTML = `<select id='switcher-trigger' class='form-select'>`;
     for (const i in data.maxDay) {
         selectorHTML += `<option value="${i}">${i}</option>`;
     }
