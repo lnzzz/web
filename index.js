@@ -27,6 +27,8 @@ const twitterLinksService = require('./services/twitterLinks');
 const reportsService = require('./services/reports');
 const apiService = require('./services/api');
 
+const no_data_str = 'sin datos';
+
 const app = express();
 
 app.use(express.static('public'));
@@ -65,6 +67,18 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+const isAuthenticated = async(req) => {
+  req.session.returnTo = req.originalUrl;
+  let auth = false;
+    if (req.session.user) {
+      auth = true;
+    }
+
+  if (req.cookies && req.cookies.remember_me && req.cookies.remember_me === req.session.rememberMeToken) {
+      auth = true;
+  }
+  return auth;
+}
 
 function adjustDate(date) {
   const newDate = subHours(date, 3);
@@ -132,9 +146,94 @@ const jsonMiddleware = (req, res, next) => {
 };
 
 app.get('/login', async(req, res) => {
+  const db = client.db(dbName);
+  const channelStatsCol = db.collection('channel-stats');
+
+  const maxPerDay = await statsService.getMaxDay(channelStatsCol);
+  const maxPerDayTwitch = await statsService.getMaxDay(channelStatsCol, 'twitch');
+  const maxPerDayYoutube = await statsService.getMaxDay(channelStatsCol, 'youtube');
+  
+  
+  const maxPerMorning = await statsService.getMaxBetweenHours(channelStatsCol, 6, 10);
+  const maxPerMorningTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 6, 10, 'twitch');
+  const maxPerMorningYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 6, 10, 'youtube');
+
+  const maxPerMidday = await statsService.getMaxBetweenHours(channelStatsCol, 10, 14);
+  const maxPerMiddayTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 10, 14, 'twitch');
+  const maxPerMiddayYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 10, 14, 'youtube');
+
+  const maxPerAfternoon = await statsService.getMaxBetweenHours(channelStatsCol, 14, 18);
+  const maxPerAfternoonTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 14, 18, 'twitch');
+  const maxPerAfternoonYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 14, 18, 'youtube');
+
+  const maxPerNight = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23);
+  const maxPerNightTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23, 'twitch');
+  const maxPerNightYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23, 'youtube');
+
+  const maxDay = maxPerDay[0] || [no_data_str, 0];
+  const maxDayTwitch = maxPerDayTwitch[0] || [no_data_str, 0];
+  const maxDayYoutube = maxPerDayYoutube[0] || [no_data_str, 0];
+
+  const maxMorning = maxPerMorning[0] || [no_data_str, 0];
+
+  const maxMorningTwitch = maxPerMorningTwitch[0] || [no_data_str, 0];
+  const maxMorningYoutube = maxPerMorningYoutube[0] || [no_data_str, 0];
+
+  const maxMidday = maxPerMidday[0] || [no_data_str, 0];
+  const maxMiddayTwitch = maxPerMiddayTwitch[0] || [no_data_str, 0];
+  const maxMiddayYoutube = maxPerMiddayYoutube[0] || [no_data_str, 0];
+
+
+  const maxAfternoon = maxPerAfternoon[0] || [no_data_str, 0];
+  const maxAfternoonTwitch = maxPerAfternoonTwitch[0] || [no_data_str, 0];
+  const maxAfternoonYoutube = maxPerAfternoonYoutube[0] || [no_data_str, 0];
+
+  const maxNight = maxPerNight[0] || [no_data_str, 0];
+  const maxNightTwitch = maxPerNightTwitch[0] || [no_data_str, 0];
+  const maxNightYoutube = maxPerNightYoutube[0] || [no_data_str, 0];
+
+  const maxDayLink = await twitterLinksService.getLink(db, 'max-day');
+  const maxMorningLink = await twitterLinksService.getLink(db, 'max-morning');
+  const maxMiddayLink = await twitterLinksService.getLink(db, 'max-midday');
+  const maxAfternoonLink = await twitterLinksService.getLink(db, 'max-afternoon');
+  const maxNightLink = await twitterLinksService.getLink(db, 'max-night');
   const htmlContent = fs.readFileSync('templates/login.ejs', 'utf8');
+  
   const htmlRenderized = ejs.render(htmlContent, {
-    filename: 'login.ejs'
+    filename: 'login.ejs',
+    data: {
+      adjustDate: adjustDate,
+      getByIndex: getByIndex,
+      getLink: getLink,
+      getChannelId: getChannelId,
+      getDate: getDate,
+      getFilename: getFilename,
+      totals: {
+          maxDay,
+          maxMorning,
+          maxMidday,
+          maxAfternoon,
+          maxDayTwitch,
+          maxDayYoutube,
+          maxMorningTwitch,
+          maxMorningYoutube,
+          maxMiddayTwitch,
+          maxMiddayYoutube,
+          maxAfternoonTwitch,
+          maxAfternoonYoutube,
+          maxNight,
+          maxNightTwitch,
+          maxNightYoutube
+      },
+      links: {
+        maxDayLink,
+        maxMorningLink,
+        maxMiddayLink,
+        maxAfternoonLink,
+        maxNightLink
+      },
+      fs: fs
+  }
   });
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/html');
@@ -173,19 +272,6 @@ app.get('/logout', (req, res) => {
   });
 });
 
-const isAuthenticated = async(req) => {
-  req.session.returnTo = req.originalUrl;
-  let auth = false;
-    if (req.session.user) {
-      auth = true;
-    }
-
-  if (req.cookies && req.cookies.remember_me && req.cookies.remember_me === req.session.rememberMeToken) {
-      auth = true;
-  }
-  return auth;
-}
-
 app.get('/dashboard', async(req, res) => {
   const loggedIn = await isAuthenticated(req);
   if (loggedIn) {
@@ -223,6 +309,7 @@ app.get('/dashboard', async(req, res) => {
 
 app.get('/', async (req, res) => {
     let auth = false;
+
     if (req.session.user) {
       auth = true;
     }
@@ -231,70 +318,73 @@ app.get('/', async (req, res) => {
       auth = true;
     }
 
+    const db = client.db(dbName);
+    const channelStatsCol = db.collection('channel-stats');
+    const channelsCol = db.collection('channels');
+
+    let webAppToken;
+    let isPremium;
+    let last10;
+    let channelData;
+    let activeReport;
+
     if (auth === true) {
-      const webAppToken = jsonwebtoken.sign({ username: 'webApplication' }, config.jwt.secretKey, { expiresIn: '24h' });
-      const isPremium = req.session.isPremium;
-      const db = client.db(dbName);
-      const channelStatsCol = db.collection('channel-stats');
-      const channelsCol = db.collection('channels');
-      const maxPerDay = await statsService.getMaxDay(channelStatsCol);
-      
-      const maxPerDayTwitch = await statsService.getMaxDay(channelStatsCol, 'twitch');
-      const maxPerDayYoutube = await statsService.getMaxDay(channelStatsCol, 'youtube');
-      const maxPerNight = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23);
-      
-      
-      const maxPerMorning = await statsService.getMaxBetweenHours(channelStatsCol, 6, 10);
-      const maxPerMorningTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 6, 10, 'twitch');
-      const maxPerMorningYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 6, 10, 'youtube');
+      webAppToken = jsonwebtoken.sign({ username: 'webApplication' }, config.jwt.secretKey, { expiresIn: '24h' });
+      isPremium = req.session.isPremium;
+      last10 = await statsService.getLast10Grouped(channelStatsCol);
+      channelData = await channelService.getChannels(channelsCol);
+      activeReport = await reportsService.getActiveReport(db);
+    }
 
-      const maxPerMidday = await statsService.getMaxBetweenHours(channelStatsCol, 10, 14);
-      const maxPerMiddayTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 10, 14, 'twitch');
-      const maxPerMiddayYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 10, 14, 'youtube');
-
-      const maxPerAfternoon = await statsService.getMaxBetweenHours(channelStatsCol, 14, 18);
-      const maxPerAfternoonTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 14, 18, 'twitch');
-      const maxPerAfternoonYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 14, 18, 'youtube');
-
-      
-      const maxPerNightTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23, 'twitch');
-      const maxPerNightYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23, 'youtube');
-
-      const last10 = await statsService.getLast10Grouped(channelStatsCol);
-      const channelData = await channelService.getChannels(channelsCol);
-
-      const no_data_str = 'sin datos';
-
-      const maxDay = maxPerDay[0] || [no_data_str, 0];
-      const maxDayTwitch = maxPerDayTwitch[0] || [no_data_str, 0];
-      const maxDayYoutube = maxPerDayYoutube[0] || [no_data_str, 0];
-
-      const maxMorning = maxPerMorning[0] || [no_data_str, 0];
-
-      const maxMorningTwitch = maxPerMorningTwitch[0] || [no_data_str, 0];
-      const maxMorningYoutube = maxPerMorningYoutube[0] || [no_data_str, 0];
-
-      const maxMidday = maxPerMidday[0] || [no_data_str, 0];
-      const maxMiddayTwitch = maxPerMiddayTwitch[0] || [no_data_str, 0];
-      const maxMiddayYoutube = maxPerMiddayYoutube[0] || [no_data_str, 0];
-
+    const maxPerDay = await statsService.getMaxDay(channelStatsCol);
+    const maxPerDayTwitch = await statsService.getMaxDay(channelStatsCol, 'twitch');
+    const maxPerDayYoutube = await statsService.getMaxDay(channelStatsCol, 'youtube');
     
-      const maxAfternoon = maxPerAfternoon[0] || [no_data_str, 0];
-      const maxAfternoonTwitch = maxPerAfternoonTwitch[0] || [no_data_str, 0];
-      const maxAfternoonYoutube = maxPerAfternoonYoutube[0] || [no_data_str, 0];
+    const maxPerMorning = await statsService.getMaxBetweenHours(channelStatsCol, 6, 10);
+    const maxPerMorningTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 6, 10, 'twitch');
+    const maxPerMorningYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 6, 10, 'youtube');
 
-      const maxNight = maxPerNight[0] || [no_data_str, 0];
-      const maxNightTwitch = maxPerNightTwitch[0] || [no_data_str, 0];
-      const maxNightYoutube = maxPerNightYoutube[0] || [no_data_str, 0];
+    const maxPerMidday = await statsService.getMaxBetweenHours(channelStatsCol, 10, 14);
+    const maxPerMiddayTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 10, 14, 'twitch');
+    const maxPerMiddayYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 10, 14, 'youtube');
 
-      const maxDayLink = await twitterLinksService.getLink(db, 'max-day');
-      const maxMorningLink = await twitterLinksService.getLink(db, 'max-morning');
-      const maxMiddayLink = await twitterLinksService.getLink(db, 'max-midday');
-      const maxAfternoonLink = await twitterLinksService.getLink(db, 'max-afternoon');
-      const maxNightLink = await twitterLinksService.getLink(db, 'max-night');
+    const maxPerAfternoon = await statsService.getMaxBetweenHours(channelStatsCol, 14, 18);
+    const maxPerAfternoonTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 14, 18, 'twitch');
+    const maxPerAfternoonYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 14, 18, 'youtube');
 
-      const activeReport = await reportsService.getActiveReport(db);
-      
+    const maxPerNight = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23);
+    const maxPerNightTwitch = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23, 'twitch');
+    const maxPerNightYoutube = await statsService.getMaxBetweenHours(channelStatsCol, 18, 23, 'youtube');
+
+    const maxDay = maxPerDay[0] || [no_data_str, 0];
+    const maxDayTwitch = maxPerDayTwitch[0] || [no_data_str, 0];
+    const maxDayYoutube = maxPerDayYoutube[0] || [no_data_str, 0];
+
+    const maxMorning = maxPerMorning[0] || [no_data_str, 0];
+
+    const maxMorningTwitch = maxPerMorningTwitch[0] || [no_data_str, 0];
+    const maxMorningYoutube = maxPerMorningYoutube[0] || [no_data_str, 0];
+
+    const maxMidday = maxPerMidday[0] || [no_data_str, 0];
+    const maxMiddayTwitch = maxPerMiddayTwitch[0] || [no_data_str, 0];
+    const maxMiddayYoutube = maxPerMiddayYoutube[0] || [no_data_str, 0];
+
+  
+    const maxAfternoon = maxPerAfternoon[0] || [no_data_str, 0];
+    const maxAfternoonTwitch = maxPerAfternoonTwitch[0] || [no_data_str, 0];
+    const maxAfternoonYoutube = maxPerAfternoonYoutube[0] || [no_data_str, 0];
+
+    const maxNight = maxPerNight[0] || [no_data_str, 0];
+    const maxNightTwitch = maxPerNightTwitch[0] || [no_data_str, 0];
+    const maxNightYoutube = maxPerNightYoutube[0] || [no_data_str, 0];
+
+    const maxDayLink = await twitterLinksService.getLink(db, 'max-day');
+    const maxMorningLink = await twitterLinksService.getLink(db, 'max-morning');
+    const maxMiddayLink = await twitterLinksService.getLink(db, 'max-midday');
+    const maxAfternoonLink = await twitterLinksService.getLink(db, 'max-afternoon');
+    const maxNightLink = await twitterLinksService.getLink(db, 'max-night');
+    
+    if (auth === true) {
       const htmlContent = fs.readFileSync('templates/main.ejs', 'utf8');
       const htmlRenderized = ejs.render(htmlContent, {
           filename: 'example.ejs',
@@ -342,11 +432,48 @@ app.get('/', async (req, res) => {
       res.setHeader('Content-Type', 'text/html');
       res.end(htmlRenderized);
     } else {
-      res.redirect('/login');
-    } 
+      const htmlContent = fs.readFileSync('templates/login.ejs', 'utf8');
+      const htmlRenderized = ejs.render(htmlContent, {
+        filename: 'login.ejs',
+        data: {
+          adjustDate: adjustDate,
+          getByIndex: getByIndex,
+          getLink: getLink,
+          getChannelId: getChannelId,
+          getDate: getDate,
+          getFilename: getFilename,
+          totals: {
+              maxDay,
+              maxMorning,
+              maxMidday,
+              maxAfternoon,
+              maxDayTwitch,
+              maxDayYoutube,
+              maxMorningTwitch,
+              maxMorningYoutube,
+              maxMiddayTwitch,
+              maxMiddayYoutube,
+              maxAfternoonTwitch,
+              maxAfternoonYoutube,
+              maxNight,
+              maxNightTwitch,
+              maxNightYoutube
+          },
+          links: {
+            maxDayLink,
+            maxMorningLink,
+            maxMiddayLink,
+            maxAfternoonLink,
+            maxNightLink
+          },
+          fs: fs
+      }
+      });
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'text/html');
+      res.end(htmlRenderized);
+    }
 });
-
-
 
 /* api */
 app.post('/token', jsonMiddleware, async(req, res) => {
@@ -384,7 +511,6 @@ app.post('/users', jsonMiddleware, async(req, res) => {
     res.status(400).send({ err: err.message });
   }
 });
-
 
 app.put('/youtube/channel/:name', jsonMiddleware, async(req, res) => {
   const db = client.db(dbName);

@@ -1,0 +1,99 @@
+.aclaracion { color: #555; font-weight: bold; }
+html, body { height: 100%; }
+body { background: #111; }
+.wrapper { min-height: 100%; display: flex; flex-direction: column; }
+.content { flex: 1; }
+.no-select { user-select: none; -moz-user-select: none; -ms-user-select: none; -webkit-user-select: none; }
+.feature { background: #000; border-radius: 15px; color: #FFF; text-align: center; padding-top: 15px; height: 100%; }
+a.xActive { background: violet !important; color: black !important; text-transform: uppercase; }
+.nav-item a { color: white; text-transform: uppercase; }
+.nav-item a:hover { color: pink; }
+.active_underlined { text-decoration: underline; color: white !important; }
+.feature h2 { color: violet; font-weight: bold; }
+.feature h4 { text-transform: uppercase; font-size: 16px; }
+.feature h3 { text-transform: uppercase; color: pink; font-size: 18px; }
+.table thead th { background: #000 !important; color: white; text-align: center; text-transform: uppercase; border-bottom: solid 1px #222; }
+.navbar-custom .navbar-nav .nav-link { border-bottom: none !important; }
+.table tbody tr td { border-bottom: solid 1px #222; background: #111 !important; color: pink; text-align: center; }
+footer { color: violet; }
+p { color: white; }
+.form-signin .form-floating:focus-within { z-index: 2; }
+.form-signin input[type="email"] { margin-bottom: -1px; border-bottom-right-radius: 0; border-bottom-left-radius: 0; }
+.form-signin input[type="password"] { margin-bottom: 10px; border-top-left-radius: 0; border-top-right-radius: 0; }
+.violet { color: violet; }
+.violet-bg { background-color: violet; }
+.violet-bg:hover { background-color: pink; border: solid 1px violet; }
+.violet-border { border: solid 1px violet; }
+.rounded { border-radius: var(--bs-border-radius); }
+.hv { font-family: "havelock-titling-variable", sans-serif; font-variation-settings: 'wght' 700; }
+.ml-15-negative { margin-left: -15px !important }
+h1, .colorized { color: #D72677 }
+.main_logo {
+    width: 300px;
+    height: 300px;
+}
+
+.max-vh-80 { max-height: 80vh; }
+.fp-watermark { display: none !important; }
+
+div[data-anchor="data-tiempo-real"] {
+    background: -moz-linear-gradient(180deg, rgba(0,0,87,1) 0%, rgba(17, 17, 17, 1) 100%);
+    background: -webkit-linear-gradient(180deg, rgba(0,0,87,1) 0%, rgba(17, 17, 17, 1) 100%);
+    background: linear-gradient(180deg, rgba(0,0,87,1) 0%, rgba(17, 17, 17, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000057",endColorstr="#000000",GradientType=1);
+}
+
+div[data-anchor="home"] {
+    background: -moz-linear-gradient(180deg, rgba(0,0,87,1) 0%, rgba(17, 17, 17, 1) 100%);
+    background: -webkit-linear-gradient(180deg, rgba(0,0,87,1) 0%, rgba(17, 17, 17, 1) 100%);
+    background: linear-gradient(180deg, rgba(0,0,87,1) 0%, rgba(17, 17, 17, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000057",endColorstr="#000000",GradientType=1);
+}
+
+div[data-anchor="informes"] {
+    background: -moz-linear-gradient(360deg, rgba(0,0,87,1) 0%, rgba(17, 17, 17, 1) 100%);
+    background: -webkit-linear-gradient(360deg, rgba(0,0,87,1) 0%, rgba(17, 17, 17, 1) 100%);
+    background: linear-gradient(360deg, rgba(0,0,87,1) 0%, rgba(17, 17, 17, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000057",endColorstr="#000000",GradientType=1);
+}
+
+div[data-anchor="quienes-somos"] {
+    background: -moz-linear-gradient(360deg, rgba(0,0,87,1) 0%, rgba(17, 17, 17, 1) 100%);
+    background: -webkit-linear-gradient(360deg, rgba(0,0,87,1) 0%, rgba(17, 17, 17, 1) 100%);
+    background: linear-gradient(360deg, rgba(0,0,87,1) 0%, rgba(17, 17, 17, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000057",endColorstr="#000000",GradientType=1);
+}
+
+#fp-nav ul li a span, #menu-line, .fp-slidesNav ul li a span { background-color: violet !important; }
+.ml-1 { margin-left: 10px; }
+.mr-1 { margin-right: 10px; }
+.wsp-btn {
+    position: absolute;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    right: 0;
+    bottom: 0;
+    border-radius: 5px;
+    height: 100px;
+    padding-top: 10px;
+    width: 150px !important;
+}
+
+.float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color:#25d366;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+    font-size:30px;
+	box-shadow: 2px 2px 3px #999;
+    z-index:100;
+}
+
+.my-float{
+	margin-top:7px;
+}

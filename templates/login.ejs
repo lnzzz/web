@@ -17,173 +17,125 @@
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-		<style>
-      .aclaracion {
-        color: #555;
-        font-weight: bold;
-      }
-			html, body {
-			      height: 100%;
-			    }
-			
-			    body {
-			      background: #111;
-			    }
-			
-			    .wrapper {
-			      min-height: 100%;
-			      display: flex;
-			      flex-direction: column;
-			    }
-			
-			    .content {
-			      flex: 1;
-			    }
-			  .no-select {
-			    user-select: none; /* Standard syntax */
-			    -moz-user-select: none; /* Firefox */
-			    -ms-user-select: none; /* Internet Explorer/Edge */
-			    -webkit-user-select: none; /* Safari */
-			  }
-			
-			  
-			
-			  .feature {
-			    background: #000;
-			    border-radius: 15px;
-			    color: #FFF;
-			    text-align: center;
-			    padding-top: 15px;
-			    height: 100%;
-			  }
-			
-			  .active {
-			    background: violet !important;
-			    color: black !important;
-			  }
-			
-			  .nav-link {
-			    color: violet;
-			  }
-			
-			  .nav-link:hover {
-			    color: pink;
-			  }
-			
-			  .feature h2 {
-			    color: violet;
-			    font-weight: bold;
-			  }
-			  .feature h4 {
-			    text-transform: uppercase;
-			    font-size: 16px;
-			  }
-			
-			  .feature h3 {
-			    text-transform: uppercase;
-			    color: pink;
-			    font-size: 18px;
-			  }
-			
-			  .table thead th {
-			    background: #000 !important;
-			    color: white;
-			    text-align: center;
-			    text-transform: uppercase;
-			    border-bottom: solid 1px #222;
-			  }
-			  .navbar-custom .navbar-nav .nav-link {
-			    border-bottom: none !important;
-			  }
-			
-			  header {
-			    border-bottom: solid 1px violet !important;
-			  }
-			
-			  .table tbody tr td {
-			    border-bottom: solid 1px #222;
-			    background: #111 !important;
-			    color: pink;
-			    text-align: center;
-			  }
-			
-			  footer {
-			    color: violet;
-			  }
-			  
-			
-		</style>
-        <style>
-            html,
-            body {
-                height: 100%;
-            }
-            .form-signin {
-                max-width: 330px;
-                padding: 1rem;
-            }
-            .form-signin .form-floating:focus-within {
-                z-index: 2;
-            }
-            .form-signin input[type="email"] {
-                margin-bottom: -1px;
-                border-bottom-right-radius: 0;
-                border-bottom-left-radius: 0;
-            }
-
-            .form-signin input[type="password"] {
-                margin-bottom: 10px;
-                border-top-left-radius: 0;
-                border-top-right-radius: 0;
-            }
-
-            .violet {
-                color: violet;
-            }
-
-            .violet-bg {
-                background-color: violet;
-            }
-
-            .violet-bg:hover {
-                background-color: pink;
-                border: solid 1px violet;
-            }
-            .violet-border {
-                border: solid 1px violet;
-            }
-            .rounded {
-                border-radius: var(--bs-border-radius);
-            }
-            .mt-10 {
-                margin-top: 10px;
-            }
-        </style>
+		<link rel="stylesheet" href="https://use.typekit.net/jhz1uoq.css">
+		<link rel="stylesheet" href="/css/landing.css" /> 
+		<link rel="stylesheet" type="text/css" href="/css/fullpage.css" />
+		<script src="easings.min.js"></script>
+		<script src="fullpage.js"></script>
 	</head>
-	<body class="d-flex align-items-center py-4">
-        <main class="form-signin w-100 m-auto">
-            <form action="" method="POST" autocomplete="off">
-              <img class="mb-4 text-center" src="/images/logo.png" alt="" width="150" height="150">
-              <h1 class="h3 mb-3 fw-normal text-white">Login</h1>
+	<body>
+		
+		<div id="fullpage">
+			<div class="section">
+				<%- include('templates/maximos') %>
+			</div>
+			<div class="section">
+				<%- include('templates/quienes_somos') %>
+			</div>
+			<div class="section">
+				<%- include('templates/data_tiempo_real') %>
+			</div>
+			<div class="section">
+				<%- include('templates/redes_sociales') %>
+			</div>
+			<div class="section">
+				<%- include('templates/informes') %>
+			</div>
+			<div class="section">
+				<%- include('templates/login_form') %>
+			</div>
+		</div>
+		<a class="float" href="https://wa.me/+5491162104164?text=Hola%21%20Me%20contacto%20desde%20la%20web%20de%20EnDirectoStream.com">
+			<i class="bi d-block bi-whatsapp my-float"></i>
+		</a>
+		<script src="login.js"></script>
+		<script type="text/javascript">
+			var myFullpage = new fullpage('#fullpage', {
+				// Navigation
+				menu: '#menu',
+				lockAnchors: false,
+				anchors:['home', 'quienes-somos', 'data-tiempo-real', 'redes-sociales', 'informes', 'login'],
+				navigation: true,
+				navigationPosition: 'right',
+				navigationTooltips: ['Inicio', 'Quienes Somos', 'Data en Tiempo Real', 'Redes Sociales', 'Informes', 'Login'],
+				showActiveTooltip: false,
+				slidesNavigation: true,
+				slidesNavPosition: 'bottom',
 
-              <div class="form-floating">
-                <input type="text" class="form-control" id="floatingInput" name="username" autocomplete="off" placeholder="Usuario">
-                <label for="floatingInput">Usuario</label>
-              </div>
-              <div class="form-floating mt-10">
-                <input type="password" class="form-control rounded" id="floatingPassword" name="password" placeholder="Password">
-                <label for="floatingPassword">Password</label>
-              </div>
-          
-              <div class="form-check text-start my-3">
-                <input class="form-check-input" type="checkbox" name="rememberMe" id="flexCheckDefault">
-                <label class="form-check-label text-white" for="flexCheckDefault">
-                  Recordarme
-                </label>
-              </div>
-              <button class="btn btn-primary w-100 py-2 violet-bg violet-border" type="submit">Log in</button>
-              <p class="mt-5 mb-3 violet">&copy; 2024 En Directo Stream</p>
-            </form>
-          </main>
+				// Scrolling
+				css3: true,
+				scrollingSpeed: 700,
+				autoScrolling: true,
+				fitToSection: true,
+				fitToSectionDelay: 600,
+				scrollBar: false,
+				easing: 'easeInOutCubic',
+				easingcss3: 'ease',
+				loopBottom: false,
+				loopTop: false,
+				loopHorizontal: true,
+				continuousVertical: false,
+				continuousHorizontal: false,
+				scrollHorizontally: false,
+				interlockedSlides: false,
+				dragAndMove: false,
+				offsetSections: false,
+				resetSliders: false,
+				fadingEffect: false,
+				normalScrollElements: '#element1, .element2',
+				scrollOverflow: true,
+				scrollOverflowMacStyle: true,
+				scrollOverflowReset: true,
+				touchSensitivity: 15,
+				bigSectionsDestination: null,
+
+				// Accessibility
+				keyboardScrolling: true,
+				animateAnchor: true,
+				recordHistory: true,
+
+				// Design
+				controlArrows: true,
+				controlArrowsHTML: [
+					'<div class="fp-arrow"></div>', 
+					'<div class="fp-arrow"></div>'
+				],
+				verticalCentered: true,
+				paddingTop: '3em',
+				paddingBottom: '10px',
+				fixedElements: '#header, .footer',
+				responsiveWidth: 0,
+				responsiveHeight: 0,
+				responsiveSlides: false,
+				parallax: false,
+				parallaxOptions: {type: 'reveal', percentage: 62, property: 'translate'},
+				dropEffect: false,
+				dropEffectOptions: { speed: 2300, color: '#F82F4D', zIndex: 9999},
+				waterEffect: false,
+				waterEffectOptions: { animateContent: true, animateOnMouseMove: true},
+				cards: false,
+				cardsOptions: {perspective: 100, fadeContent: true, fadeBackground: true},
+
+				// Custom selectors
+				sectionSelector: '.section',
+				slideSelector: '.slide',
+
+				lazyLoading: true,
+				observer: true,
+				credits: { enabled: true, label: 'Made with fullPage.js', position: 'right'},
+
+				// Events
+				beforeLeave: function(origin, destination, direction, trigger){},
+				onLeave: function(origin, destination, direction, trigger){},
+				afterLoad: function(origin, destination, direction, trigger){},
+				afterRender: function(){},
+				afterResize: function(width, height){},
+				afterReBuild: function(){},
+				afterResponsive: function(isResponsive){},
+				afterSlideLoad: function(section, origin, destination, direction, trigger){},
+				onSlideLeave: function(section, origin, destination, direction, trigger){},
+				onScrollOverflow: function(section, slide, position, direction){}
+			});
+		</script>
 	</body>
 </html>
