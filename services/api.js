@@ -1,5 +1,9 @@
-const c = require('config');
-const { startOfDay, endOfDay, eachDayOfInterval, format, startOfHour, addHours } = require('date-fns');
+const { startOfDay, endOfDay, eachDayOfInterval, format, subHours } = require('date-fns');
+
+function adjustDate(date) {
+  const newDate = subHours(date, 3);
+  return newDate;
+}
 
 const getMaxDay = async(collection, dateFrom=null, dateTo = null, platform=null, multipleQuery=null) => {
     const today = new Date();
@@ -540,10 +544,60 @@ const getAccumulated = async(collection, dateFrom, dateTo, platform) => {
 
 }
 
+const getMaxBetweenHoursPerChannelAndPlatform = async(collection, channel, platform, startHour, endHour) => {
+  const startTime = new Date();
+  startTime.setHours(startHour, 0, 0, 0);
+
+  const endTime = new Date();
+  endTime.setHours(endHour, 0, 0, 0);
+
+  const query = {
+    channel: channel,
+    platform: platform,
+    date: {
+      $gte: startTime,
+      $lte: endTime
+    }
+  };
+
+  const data = await collection.find(query).sort({ "viewCount": -1 }).limit(1).toArray();
+  if (data.length === 0) return null;
+  if (data[0].viewCount === 0) return null;
+  return {
+    viewCount: data[0].viewCount,
+    date: adjustDate(new Date(data[0].date))
+  }
+}
+
+
+const getMaxDayPerChannelAndPlatform = async(collection, channel, platform) => {
+  const today = new Date();
+  const dayStart = startOfDay(today);
+  const dayEnd = endOfDay(today);
+
+  const query = {
+    channel: channel,
+    platform: platform,
+    date: {
+      $gte: dayStart,
+      $lt: dayEnd
+    }
+  };
+
+  const data = await collection.find(query).sort({ "viewCount": -1 }).limit(1).toArray();
+  if (data[0].viewCount === 0) return null;
+  return {
+    viewCount: data[0].viewCount,
+    date: adjustDate(new Date(data[0].date))
+  }
+}
+
 module.exports = {
     getMaxDay,
     getMaxBetweenHours,
     getMaxBetweenHoursM,
     getGrouped,
-    getAccumulated
+    getAccumulated,
+    getMaxDayPerChannelAndPlatform,
+    getMaxBetweenHoursPerChannelAndPlatform
 }

@@ -624,6 +624,30 @@ app.get('/data/totals', jsonMiddleware, async (req, res) => {
   })
 });
 
+app.get('/data/totals-per-channel', jsonMiddleware, async(req, res) => {
+  const db = client.db(dbName);
+  const channelStatsCol = db.collection('channel-stats');
+  const channelsCol = db.collection('channels');
+  const channelData = await channelService.getChannels(channelsCol);
+  
+  const perChannel = {};
+
+  for (const i in channelData) {
+    const channelName = channelData[i].name;
+    perChannel[channelName] = {};
+    for (const j in channelData[i].items) {
+      const channelPlatform = channelData[i].items[j].platform;
+      if (!perChannel[channelName][channelPlatform]) perChannel[channelName][channelPlatform] = {};
+      perChannel[channelName][channelPlatform].maxDay = await apiService.getMaxDayPerChannelAndPlatform(channelStatsCol, channelName, channelPlatform);
+      perChannel[channelName][channelPlatform].maxMorning = await apiService.getMaxBetweenHoursPerChannelAndPlatform(channelStatsCol, channelName, channelPlatform, 6, 10);
+      perChannel[channelName][channelPlatform].maxMidday = await apiService.getMaxBetweenHoursPerChannelAndPlatform(channelStatsCol, channelName, channelPlatform, 10, 14);
+      perChannel[channelName][channelPlatform].maxAfternoon = await apiService.getMaxBetweenHoursPerChannelAndPlatform(channelStatsCol, channelName, channelPlatform, 14, 18);
+      perChannel[channelName][channelPlatform].maxNight = await apiService.getMaxBetweenHoursPerChannelAndPlatform(channelStatsCol, channelName, channelPlatform, 18, 23);
+    }
+  }
+  res.status(200).send(perChannel);
+});
+
 app.post('/twitter/links', jsonMiddleware, async(req, res) => {
   try {
     const db = client.db(dbName);
