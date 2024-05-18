@@ -5,7 +5,7 @@ function adjustDate(date) {
   return newDate;
 }
 
-const getMaxDay = async(collection, dateFrom=null, dateTo = null, platform=null, multipleQuery=null) => {
+const getMaxDay = async(collection, dateFrom=null, dateTo = null, platform=null, multipleQuery=null, channel=null) => {
     const today = new Date();
     
     const startDate = (dateFrom) ? new Date(dateFrom) : today;
@@ -43,6 +43,10 @@ const getMaxDay = async(collection, dateFrom=null, dateTo = null, platform=null,
 
       if (platform) {
         match.$match['platform'] = platform;
+      }
+
+      if (channel) {
+        match.$match['channel'] = channel;
       }
 
       const data = await collection.aggregate([

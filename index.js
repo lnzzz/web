@@ -635,6 +635,8 @@ app.get('/data/maxes-per-channel', jsonMiddleware, async(req, res) => {
   for (const i in channelData) {
     const channelName = channelData[i].name;
     perChannel[channelName] = {};
+    const maxPeak = await apiService.getMaxDay(channelStatsCol, null, null, null, null, channelName);
+    perChannel[channelName].maxPeak = (maxPeak) ? maxPeak.value : null;
     for (const j in channelData[i].items) {
       const channelPlatform = channelData[i].items[j].platform;
       if (!perChannel[channelName][channelPlatform]) perChannel[channelName][channelPlatform] = {};
