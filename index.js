@@ -624,7 +624,7 @@ app.get('/data/totals', jsonMiddleware, async (req, res) => {
   })
 });
 
-app.get('/data/totals-per-channel', jsonMiddleware, async(req, res) => {
+app.get('/data/maxes-per-channel', jsonMiddleware, async(req, res) => {
   const db = client.db(dbName);
   const channelStatsCol = db.collection('channel-stats');
   const channelsCol = db.collection('channels');
