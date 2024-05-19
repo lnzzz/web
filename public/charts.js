@@ -81,6 +81,7 @@ const generateHourlyChart = async(dates) => {
     await resetChartContainer();
     const formattedSeries = transformDataToObject(dates);
     const datesKeys = Object.keys(dates).sort((a, b) => new Date(a) - new Date(b));
+    console.log(datesKeys);
     
     var options = {
         series: formattedSeries,
