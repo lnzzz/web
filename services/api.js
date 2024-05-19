@@ -665,8 +665,6 @@ const getHourlyValues = async(collection, dateFrom, dateTo, channels, platform) 
       for (const x in channels) {
         if (totals[j]._id.channel === channels[x]) {
           obj[totals[j]._id.date][channels[x]] = totals[j].totalViewCount || 0;
-        } else {
-          obj[totals[j]._id.date][channels[x]] = 0;
         }
       }
     }
