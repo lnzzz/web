@@ -7,7 +7,12 @@ function adjustDate(date) {
 
 function formatHours(date) {
   const newDate = subHours(date, 3);
-  return newDate;
+  const day = String(newDate.getDate()).padStart(2, '0');
+  const month = String(newDate.getMonth() + 1).padStart(2, '0'); // January is 0!
+  const year = newDate.getFullYear();
+  const hours = newDate.getHours().padStart(2, '0');
+  const minutes = newDate.getMinutes().padStart(2, '0');
+  return `${day}-${month}-${year} ${hours}:${minutes}`;
 }
 
 function formatDate(date) {
