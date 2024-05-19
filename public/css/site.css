@@ -49,6 +49,19 @@ a.active {
     color: violet;
 }
 
+.nav-link-red {
+    color: #D72677;
+}
+
+a.nav-link-red.active {
+    background: #D72677 !important;
+    color: white !important;
+}
+
+.nav-link-red:hover {
+    color: white;
+}
+
 .nav-link:hover {
     color: pink;
 }

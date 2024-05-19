@@ -28,11 +28,8 @@
 		<div class="wrapper">
 			<%- include('templates/header') %>
 			<div class="container">
-        		<ul class="nav nav-pills justify-content-between">
-					<div class="d-flex">
-						<li class="nav-item"><a href="#" id="totals-btn" class="nav-link active" onClick="display('totals'); return false;">Total</a></li>
-						<li class="nav-item"><a href="#" id="youtube-btn" class="nav-link" onClick="display('youtube'); return false;">Youtube</a></li>
-						<li class="nav-item"><a href="#" id="twitch-btn" class="nav-link" onClick="display('twitch'); return false;">Twitch</a></li>
+					<ul class="nav nav-pills flex-column flex-sm-row justify-content-between">
+						<li class="nav-item"><a href="#" id="data-btn" class="nav-link" onClick="display('data'); return false;">Datos</a></li>
 						<% if (data.activeReport) { %> 
 							<li class="nav-item"><a href="#" id="reports-btn" class="nav-link" onClick="display('reports'); return false;">Informe</a></li>
 						<% } %>
@@ -41,480 +38,491 @@
 							<li class="nav-item"><a href="#" id="query-btn" class="nav-link" onClick="display('query'); return false">Consultas</a></li>
 							<li class="nav-item"><a href="#" id="chart-btn" class="nav-link" onClick="display('chart'); return false">Gráficos</a></li>
 						<% } %>
-					</div>
-					<li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-				</ul>
-				<div id="stats-totals" class="stats row g-4 py-5 row-cols-1 row-cols-lg-5 gx-2">
-					<div class="col">
-						<div class="feature d-flex flex-column">
-							<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-								<img src="/images/maxDia.svg" width="50" height="50"/>
+						<li class="nav-item ms-md-auto ms-sm-auto ms-xs-0"><a class="nav-link" href="/logout">Logout</a></li>
+					</ul>
+				<div id="data-totals">
+					<hr/>
+					<ul class="nav nav-pills flex-column flex-sm-row">
+						<li class="nav-item"><a href="#" id="totals-btn" class="nav-link nav-link-red active" onClick="display('totals'); return false;">Total</a></li>
+						<li class="nav-item"><a href="#" id="youtube-btn" class="nav-link nav-link-red" onClick="display('youtube'); return false;">Youtube</a></li>
+						<li class="nav-item"><a href="#" id="twitch-btn" class="nav-link nav-link-red" onClick="display('twitch'); return false;">Twitch</a></li>
+					</ul>
+					<div id="stats-data">
+						<div id="stats-totals" class="stats row g-4 py-5 row-cols-1 row-cols-lg-5 gx-2">
+							<div class="col">
+								<div class="feature d-flex flex-column">
+									<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+										<img src="/images/maxDia.svg" width="50" height="50"/>
+									</div>
+									<h4>M&aacute;x. del d&iacute;a <br/><span class="aclaracion">24hs</span></h4>
+									<h3><%= data.totals.maxDay[0] %></h3>
+									<h2>
+										<% if (data.links.maxDayLink) { %> 
+											<%= data.totals.maxDay[1] %><br/>
+											<a class="more" href="<%= data.links.maxDayLink.linkValue %>" target="_blank">
+												<img src="images/Twitter.svg" width="30" height="30" />
+											</a>
+										<% } else { %> 
+											<%= data.totals.maxDay[1] %>
+										<% } %>
+									</h2>
+									<div class="d-flex mt-auto justify-content-end px-3 pb-3">
+										<i class="bi bi-youtube me-2"></i> 
+										<i class="bi bi-twitch"></i>
+									</div>
+								</div>
 							</div>
-							<h4>M&aacute;x. del d&iacute;a <br/><span class="aclaracion">24hs</span></h4>
-							<h3><%= data.totals.maxDay[0] %></h3>
-							<h2>
-								<% if (data.links.maxDayLink) { %> 
-									<%= data.totals.maxDay[1] %><br/>
-									<a class="more" href="<%= data.links.maxDayLink.linkValue %>" target="_blank">
-										<img src="images/Twitter.svg" width="30" height="30" />
-									</a>
-								<% } else { %> 
-									<%= data.totals.maxDay[1] %>
-								<% } %>
-							</h2>
-							<div class="d-flex mt-auto justify-content-end px-3 pb-3">
-								<i class="bi bi-youtube me-2"></i> 
-								<i class="bi bi-twitch"></i>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="feature d-flex flex-column">
-							<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-								<img src="/images/maxManiana.svg" width="50" height="50"/>
-							</div>
-							<h4>M&aacute;x. de la ma&ntilde;ana <br/><span class="aclaracion">06:00 a 10:00</span></h4>
-							<h3><%= data.totals.maxMorning[0] %></h3>
-							<h2>
-							<% if (data.links.maxMorningLink) { %> 
-								<%= data.totals.maxMorning[1].v || 0 %>
-								<br/>
-								<a class="more" href="<%= data.links.maxMorningLink.linkValue %>" target="_blank">
-									<img src="images/Twitter.svg" width="30" height="30" />
-								</a>
-							<% } else { %> 
-								<%= data.totals.maxMorning[1].v || 0 %>
-							<% } %>
-							</h2>
-							<div class="d-flex mt-auto justify-content-end px-3 pb-3">
-								<i class="bi bi-youtube me-2"></i> 
-								<i class="bi bi-twitch"></i>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="feature d-flex flex-column">
-							<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-								<img src="/images/maxMediodia.svg" width="50" height="50"/>
-							</div>
-							<h4>M&aacute;x. del mediod&iacute;a <br/><span class="aclaracion">10:00 a 14:00</span></h4>
-							<h3><%= data.totals.maxMidday[0] %></h3>
-							<h2>
-								<% if (data.links.maxMiddayLink) { %> 
-									<%= data.totals.maxMidday[1].v || 0 %>
-									<br/>
-									<a class="more" href="<%= data.links.maxMiddayLink.linkValue %>" target="_blank">
-										<img src="images/Twitter.svg" width="30" height="30" />
-									</a>
-								<% } else { %> 
-									<%= data.totals.maxMidday[1].v || 0 %>
-								<% } %>
-							</h2>
-							<div class="d-flex mt-auto justify-content-end px-3 pb-3">
-								<i class="bi bi-youtube me-2"></i> 
-								<i class="bi bi-twitch"></i>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="feature d-flex flex-column">
-							<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-								<img src="/images/maxTarde.svg" width="50" height="50"/>
-							</div>
-							<h4>M&aacute;x. de la tarde <br/><span class="aclaracion">14:00 a 18:00</span></h4>
-							<h3><%= data.totals.maxAfternoon[0] %></h3>
-							<h2>
-								<% if (data.links.maxAfternoonLink) { %> 
-									<%= data.totals.maxAfternoon[1].v || 0 %>
-									<br/>
-									<a class="more" href="<%= data.links.maxAfternoonLink.linkValue %>" target="_blank">
-										<img src="images/Twitter.svg" width="30" height="30" />
-									</a>
-								<% } else { %> 
-									<%= data.totals.maxAfternoon[1].v || 0 %>
-								<% } %>
-							</h2>
-							<div class="d-flex mt-auto justify-content-end px-3 pb-3">
-								<i class="bi bi-youtube me-2"></i> 
-								<i class="bi bi-twitch"></i>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="feature d-flex flex-column">
-							<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-								<img src="/images/maxNoche.svg" width="50" height="50"/>
-							</div>
-							<h4>M&aacute;x. de la noche <br/><span class="aclaracion">18:00 a 23:00</span></h4>
-							<h3><%= data.totals.maxNight[0] %></h3>
-							<h2>
-								<% if (data.links.maxNightLink) { %> 
-									<%= data.totals.maxNight[1].v || 0 %>
-									<br/>
-									<a class="more" href="<%= data.links.maxNightLink.linkValue %>" target="_blank">
-										<img src="images/Twitter.svg" width="30" height="30" />
-									</a>
-								<% } else { %> 
-									<%= data.totals.maxNight[1].v || 0 %>
-								<% } %>
-							</h2>
-							<div class="d-flex mt-auto justify-content-end px-3 pb-3">
-								<i class="bi bi-youtube me-2"></i> 
-								<i class="bi bi-twitch"></i>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div id="stats-twitch" class="stats row g-4 py-5 row-cols-1 row-cols-lg-5 gx-2">
-					<div class="col">
-						<div class="feature d-flex flex-column">
-							<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-								<img src="/images/maxDia.svg" width="50" height="50"/>
-							</div>
-							<h4>M&aacute;x. del d&iacute;a <br/><span class="aclaracion">24hs</span></h4>
-							<h3><%= (data.totals.maxDayTwitch[1] > 0) ? data.totals.maxDayTwitch[0] : 'sin datos'  %></h3>
-							<h2>
-								<% if (data.links.maxDayLink) { %> 
-									<%= data.totals.maxDayTwitch[1] %>
-									<br/>
-									<a class="more" href="<%= data.links.maxDayLink.linkValue %>" target="_blank">
-										<img src="images/Twitter.svg" width="30" height="30" />
-									</a>
-								<% } else { %> 
-									<%= data.totals.maxDayTwitch[1] %>
-								<% } %>
-							</h2>
-							<div class="d-flex mt-auto justify-content-end px-3 pb-3">
-								<i class="bi bi-twitch"></i>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="feature d-flex flex-column">
-							<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-								<img src="/images/maxManiana.svg" width="50" height="50"/>
-							</div>
-							<h4>M&aacute;x. de la ma&ntilde;ana <br/><span class="aclaracion">06:00 a 10:00</span></h4>
-							<h3><%= data.totals.maxMorningTwitch[0] %></h3>
-							<h2>
-								<% if (data.links.maxMorningLink) { %> 
-									<%= data.totals.maxMorningTwitch[1].v || 0 %>
-									<br/>
-									<a class="more" href="<%= data.links.maxMorningLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
-								<% } else { %> 
-									<%= data.totals.maxMorningTwitch[1].v || 0 %>
-								<% } %>
-							</h2>
-							<div class="d-flex mt-auto justify-content-end px-3 pb-3">
-								<i class="bi bi-twitch"></i>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="feature d-flex flex-column">
-							<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-								<img src="/images/maxMediodia.svg" width="50" height="50"/>
-							</div>
-							<h4>M&aacute;x. del mediod&iacute;a <br/><span class="aclaracion">10:00 a 14:00</span></h4>
-							<h3><%= data.totals.maxMiddayTwitch[0] %></h3>
-							<h2>
-								<% if (data.links.maxMiddayLink) { %> 
-									<%= data.totals.maxMiddayTwitch[1].v || 0 %>
-									<br/>
-									<a class="more" href="<%= data.links.maxMiddayLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
-								<% } else { %> 
-									<%= data.totals.maxMiddayTwitch[1].v || 0 %>
-								<% } %>
-							</h2>
-							<div class="d-flex mt-auto justify-content-end px-3 pb-3">
-								<i class="bi bi-twitch"></i>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="feature d-flex flex-column">
-							<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-								<img src="/images/maxTarde.svg" width="50" height="50"/>
-							</div>
-							<h4>M&aacute;x. de la tarde <br/><span class="aclaracion">14:00 a 18:00</span></h4>
-							<h3><%= data.totals.maxAfternoonTwitch[0] %></h3>
-							<h2>
-								<% if (data.links.maxAfternoonLink) { %> 
-									<%= data.totals.maxAfternoonTwitch[1].v || 0 %>
-									<br/>
-									<a class="more" href="<%= data.links.maxAfternoonLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
-								<% } else { %> 
-									<%= data.totals.maxAfternoonTwitch[1].v || 0 %>
-								<% } %>
-							</h2>
-							<div class="d-flex mt-auto justify-content-end px-3 pb-3">
-								<i class="bi bi-twitch"></i>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="feature d-flex flex-column">
-							<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-								<img src="/images/maxNoche.svg" width="50" height="50"/>
-							</div>
-							<h4>M&aacute;x. de la noche <br/><span class="aclaracion">18:00 a 23:00</span></h4>
-							<h3><%= data.totals.maxNightTwitch[0] %></h3>
-							<h2>
-								<% if (data.links.maxNightLink) { %> 
-									<%= data.totals.maxNightTwitch[1].v || 0 %>
-									<br/>
-									<a class="more" href="<%= data.links.maxNightLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
-								<% } else { %> 
-									<%= data.totals.maxNightTwitch[1].v || 0 %>
-								<% } %>
-							</h2>
-							<div class="d-flex mt-auto justify-content-end px-3 pb-3">
-								<i class="bi bi-twitch"></i>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div id="stats-youtube" class="stats row g-4 py-5 row-cols-1 row-cols-lg-5">
-					<div class="col">
-						<div class="feature d-flex flex-column">
-							<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-								<img src="/images/maxDia.svg" width="50" height="50"/>
-							</div>
-							<h4>M&aacute;x. del d&iacute;a <br/><span class="aclaracion">24hs</span></h4>
-							<h3><%= (data.totals.maxDayYoutube[1] > 0) ? data.totals.maxDayYoutube[0] : 'sin datos'  %></h3>
-							<h2>
-								<% if (data.links.maxDayLink) { %> 
-									<%= data.totals.maxDayYoutube[1] %>
-								<br/>
-								<a class="more" href="<%= data.links.maxDayLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
-								<% } else { %> 
-									<%= data.totals.maxDayYoutube[1] %>
-								<% } %>
-							</h2>
-							<div class="d-flex mt-auto justify-content-end px-3 pb-3">
-								<i class="bi bi-youtube"></i>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="feature d-flex flex-column">
-							<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-								<img src="/images/maxManiana.svg" width="50" height="50"/>
-							</div>
-							<h4>M&aacute;x. de la ma&ntilde;ana <br/><span class="aclaracion">06:00 a 10:00</span></h4>
-							<h3><%= data.totals.maxMorningYoutube[0] %></h3>
-							<h2>
-								<% if (data.links.maxMorningLink) { %> 
-									<%= data.totals.maxMorningYoutube[1].v || 0 %>
-								<br/>
-								<a class="more" href="<%= data.links.maxMorningLink.linkValue %>" target="_blank">
-									<img src="images/Twitter.svg" width="30" height="30" />
-								</a>
-								<% } else { %> 
-									<%= data.totals.maxMorningYoutube[1].v || 0 %>
-								<% } %>
-							</h2>
-							<div class="d-flex mt-auto justify-content-end px-3 pb-3">
-								<i class="bi bi-youtube"></i>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="feature d-flex flex-column">
-							<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-								<img src="/images/maxMediodia.svg" width="50" height="50"/>
-							</div>
-							<h4>M&aacute;x. del mediod&iacute;a <br/><span class="aclaracion">10:00 a 14:00</span></h4>
-							<h3><%= data.totals.maxMiddayYoutube[0] %></h3>
-							<h2>
-								<% if (data.links.maxMiddayLink) { %> 
-									<%= data.totals.maxMiddayYoutube[1].v || 0 %>
-									<br/>
-									<a class="more" href="<%= data.links.maxMiddayLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
-								<% } else { %> 
-									<%= data.totals.maxMiddayYoutube[1].v || 0 %>
-								<% } %>
-							</h2>
-							<div class="d-flex mt-auto justify-content-end px-3 pb-3">
-								<i class="bi bi-youtube"></i>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="feature d-flex flex-column">
-							<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-								<img src="/images/maxTarde.svg" width="50" height="50"/>
-							</div>
-							<h4>M&aacute;x. de la tarde <br/><span class="aclaracion">14:00 a 18:00</span></h4>
-							<h3><%= data.totals.maxAfternoonYoutube[0] %></h3>
-							<h2>
-								<% if (data.links.maxAfternoonLink) { %> 
-									<%= data.totals.maxAfternoonYoutube[1].v || 0 %>
-									<br/>
-									<a class="more" href="<%= data.links.maxAfternoonLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
-								<% } else { %> 
-									<%= data.totals.maxAfternoonYoutube[1].v || 0 %>
-								<% } %>
-							</h2>
-							<div class="d-flex mt-auto justify-content-end px-3 pb-3">
-								<i class="bi bi-youtube"></i>
-							</div>
-						</div>
-					</div>
-					<div class="col">
-						<div class="feature d-flex flex-column">
-							<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-								<img src="/images/maxNoche.svg" width="50" height="50"/>
-							</div>
-							<h4>M&aacute;x. de la noche <br/><span class="aclaracion">18:00 a 23:00</span></h4>
-							<h3><%= data.totals.maxNightYoutube[0] %></h3>
-							<h2>
-								<% if (data.links.maxNightLink) { %> 
-									<%= data.totals.maxNightYoutube[1].v || 0 %>
-									<br/>
-									<a class="more" href="<%= data.links.maxNightLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
-								<% } else { %> 
-									<%= data.totals.maxNightYoutube[1].v || 0 %>
-								<% } %>
-							</h2>
-							<div class="d-flex mt-auto justify-content-end px-3 pb-3">
-								<i class="bi bi-youtube"></i> 
-							</div>
-						</div>
-					</div>
-				</div>
-				<div id="sum-totals" class="tbl row g-4 py-5 row-cols-1 row-cols-lg-3">
-					<table class="table">
-						<thead>
-							<tr>
-								<th scope="col">Hora</th>
-								<% for (var i=0; i<data.values.channels.length; i++) { %>
-									<th scope="col">
-										<div class="my-3 c-icon">
-											<img src="/images/<%= data.values.channels[i] %>.svg" width="40" height="40"/>
-										</div>
-										<%= data.values.channels[i]; %>
-									</th>
+							<div class="col">
+								<div class="feature d-flex flex-column">
+									<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+										<img src="/images/maxManiana.svg" width="50" height="50"/>
+									</div>
+									<h4>M&aacute;x. de la ma&ntilde;ana <br/><span class="aclaracion">06:00 a 10:00</span></h4>
+									<h3><%= data.totals.maxMorning[0] %></h3>
+									<h2>
+									<% if (data.links.maxMorningLink) { %> 
+										<%= data.totals.maxMorning[1].v || 0 %>
+										<br/>
+										<a class="more" href="<%= data.links.maxMorningLink.linkValue %>" target="_blank">
+											<img src="images/Twitter.svg" width="30" height="30" />
+										</a>
+									<% } else { %> 
+										<%= data.totals.maxMorning[1].v || 0 %>
 									<% } %>
-							</tr>
-						</thead>
-						<tbody>
-							<% for(var i in data.values.totals) { %>
-								<tr>
-									<td>
-										<%= data.adjustDate(new Date(i)) + ":" + String(new Date(i).getMinutes()).padStart(2, '0'); %>
-									</td>
-									<% for (var j=0; j<data.values.channels.length; j++) { %>
-										<td>
-											<%= data.getByIndex(i, data.values.totals, data.values.channels[j]); %>
-										</td>
-									<% } %>
-								</tr>
-								<% } %>
-						</tbody>
-					</table>
-				</div>
-				<div id="sum-twitch" class="tbl d-none row g-4 py-5 row-cols-1 row-cols-lg-3">
-					<table class="table">
-						<thead>
-							<tr>
-								<th scope="col">Hora</th>
-								<% for (var i=0; i<data.values.channels.length; i++) { %>
-									<th scope="col">
-										<div class="my-3">
-											<img src="/images/<%= data.values.channels[i] %>.svg" width="40" height="40"/>
-										</div>
-										<%= data.values.channels[i]; %>
-									</th>
-									<% } %>
-							</tr>
-						</thead>
-						<tbody>
-							<% for(var i in data.values.twitch) { %>
-								<tr>
-									<td>
-										<%= data.adjustDate(new Date(i)) + ":" + String(new Date(i).getMinutes()).padStart(2, '0'); %>
-									</td>
-									<% for (var j=0; j<data.values.channels.length; j++) { %>
-										<td>
-											<% if (data.isPremium === true) { %>
-												<%
-													var channelId = data.getChannelId(data.values.channels[j], data.channelData, 'twitch');
-													if (channelId) { 
-														const byIndex = data.getByIndex(i, data.values.twitch, data.values.channels[j]);
-														const date = data.getDate(i, data.values.twitch, data.values.channels[j]);
-														const filename = data.getFilename(data.values.channels[j], date, 'twitch');
-														if (filename) {
-												%>													
-															<a class="imageLink" href="images/twitch/<%= filename %>" target="_blank">
-																<%= byIndex  %>
-															</a>
+									</h2>
+									<div class="d-flex mt-auto justify-content-end px-3 pb-3">
+										<i class="bi bi-youtube me-2"></i> 
+										<i class="bi bi-twitch"></i>
+									</div>
+								</div>
+							</div>
+							<div class="col">
+								<div class="feature d-flex flex-column">
+									<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+										<img src="/images/maxMediodia.svg" width="50" height="50"/>
+									</div>
+									<h4>M&aacute;x. del mediod&iacute;a <br/><span class="aclaracion">10:00 a 14:00</span></h4>
+									<h3><%= data.totals.maxMidday[0] %></h3>
+									<h2>
+										<% if (data.links.maxMiddayLink) { %> 
+											<%= data.totals.maxMidday[1].v || 0 %>
+											<br/>
+											<a class="more" href="<%= data.links.maxMiddayLink.linkValue %>" target="_blank">
+												<img src="images/Twitter.svg" width="30" height="30" />
+											</a>
+										<% } else { %> 
+											<%= data.totals.maxMidday[1].v || 0 %>
+										<% } %>
+									</h2>
+									<div class="d-flex mt-auto justify-content-end px-3 pb-3">
+										<i class="bi bi-youtube me-2"></i> 
+										<i class="bi bi-twitch"></i>
+									</div>
+								</div>
+							</div>
+							<div class="col">
+								<div class="feature d-flex flex-column">
+									<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+										<img src="/images/maxTarde.svg" width="50" height="50"/>
+									</div>
+									<h4>M&aacute;x. de la tarde <br/><span class="aclaracion">14:00 a 18:00</span></h4>
+									<h3><%= data.totals.maxAfternoon[0] %></h3>
+									<h2>
+										<% if (data.links.maxAfternoonLink) { %> 
+											<%= data.totals.maxAfternoon[1].v || 0 %>
+											<br/>
+											<a class="more" href="<%= data.links.maxAfternoonLink.linkValue %>" target="_blank">
+												<img src="images/Twitter.svg" width="30" height="30" />
+											</a>
+										<% } else { %> 
+											<%= data.totals.maxAfternoon[1].v || 0 %>
+										<% } %>
+									</h2>
+									<div class="d-flex mt-auto justify-content-end px-3 pb-3">
+										<i class="bi bi-youtube me-2"></i> 
+										<i class="bi bi-twitch"></i>
+									</div>
+								</div>
+							</div>
+							<div class="col">
+								<div class="feature d-flex flex-column">
+									<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+										<img src="/images/maxNoche.svg" width="50" height="50"/>
+									</div>
+									<h4>M&aacute;x. de la noche <br/><span class="aclaracion">18:00 a 23:00</span></h4>
+									<h3><%= data.totals.maxNight[0] %></h3>
+									<h2>
+										<% if (data.links.maxNightLink) { %> 
+											<%= data.totals.maxNight[1].v || 0 %>
+											<br/>
+											<a class="more" href="<%= data.links.maxNightLink.linkValue %>" target="_blank">
+												<img src="images/Twitter.svg" width="30" height="30" />
+											</a>
+										<% } else { %> 
+											<%= data.totals.maxNight[1].v || 0 %>
+										<% } %>
+									</h2>
+									<div class="d-flex mt-auto justify-content-end px-3 pb-3">
+										<i class="bi bi-youtube me-2"></i> 
+										<i class="bi bi-twitch"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="stats-twitch" class="stats row g-4 py-5 row-cols-1 row-cols-lg-5 gx-2">
+							<div class="col">
+								<div class="feature d-flex flex-column">
+									<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+										<img src="/images/maxDia.svg" width="50" height="50"/>
+									</div>
+									<h4>M&aacute;x. del d&iacute;a <br/><span class="aclaracion">24hs</span></h4>
+									<h3><%= (data.totals.maxDayTwitch[1] > 0) ? data.totals.maxDayTwitch[0] : 'sin datos'  %></h3>
+									<h2>
+										<% if (data.links.maxDayLink) { %> 
+											<%= data.totals.maxDayTwitch[1] %>
+											<br/>
+											<a class="more" href="<%= data.links.maxDayLink.linkValue %>" target="_blank">
+												<img src="images/Twitter.svg" width="30" height="30" />
+											</a>
+										<% } else { %> 
+											<%= data.totals.maxDayTwitch[1] %>
+										<% } %>
+									</h2>
+									<div class="d-flex mt-auto justify-content-end px-3 pb-3">
+										<i class="bi bi-twitch"></i>
+									</div>
+								</div>
+							</div>
+							<div class="col">
+								<div class="feature d-flex flex-column">
+									<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+										<img src="/images/maxManiana.svg" width="50" height="50"/>
+									</div>
+									<h4>M&aacute;x. de la ma&ntilde;ana <br/><span class="aclaracion">06:00 a 10:00</span></h4>
+									<h3><%= data.totals.maxMorningTwitch[0] %></h3>
+									<h2>
+										<% if (data.links.maxMorningLink) { %> 
+											<%= data.totals.maxMorningTwitch[1].v || 0 %>
+											<br/>
+											<a class="more" href="<%= data.links.maxMorningLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
+										<% } else { %> 
+											<%= data.totals.maxMorningTwitch[1].v || 0 %>
+										<% } %>
+									</h2>
+									<div class="d-flex mt-auto justify-content-end px-3 pb-3">
+										<i class="bi bi-twitch"></i>
+									</div>
+								</div>
+							</div>
+							<div class="col">
+								<div class="feature d-flex flex-column">
+									<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+										<img src="/images/maxMediodia.svg" width="50" height="50"/>
+									</div>
+									<h4>M&aacute;x. del mediod&iacute;a <br/><span class="aclaracion">10:00 a 14:00</span></h4>
+									<h3><%= data.totals.maxMiddayTwitch[0] %></h3>
+									<h2>
+										<% if (data.links.maxMiddayLink) { %> 
+											<%= data.totals.maxMiddayTwitch[1].v || 0 %>
+											<br/>
+											<a class="more" href="<%= data.links.maxMiddayLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
+										<% } else { %> 
+											<%= data.totals.maxMiddayTwitch[1].v || 0 %>
+										<% } %>
+									</h2>
+									<div class="d-flex mt-auto justify-content-end px-3 pb-3">
+										<i class="bi bi-twitch"></i>
+									</div>
+								</div>
+							</div>
+							<div class="col">
+								<div class="feature d-flex flex-column">
+									<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+										<img src="/images/maxTarde.svg" width="50" height="50"/>
+									</div>
+									<h4>M&aacute;x. de la tarde <br/><span class="aclaracion">14:00 a 18:00</span></h4>
+									<h3><%= data.totals.maxAfternoonTwitch[0] %></h3>
+									<h2>
+										<% if (data.links.maxAfternoonLink) { %> 
+											<%= data.totals.maxAfternoonTwitch[1].v || 0 %>
+											<br/>
+											<a class="more" href="<%= data.links.maxAfternoonLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
+										<% } else { %> 
+											<%= data.totals.maxAfternoonTwitch[1].v || 0 %>
+										<% } %>
+									</h2>
+									<div class="d-flex mt-auto justify-content-end px-3 pb-3">
+										<i class="bi bi-twitch"></i>
+									</div>
+								</div>
+							</div>
+							<div class="col">
+								<div class="feature d-flex flex-column">
+									<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+										<img src="/images/maxNoche.svg" width="50" height="50"/>
+									</div>
+									<h4>M&aacute;x. de la noche <br/><span class="aclaracion">18:00 a 23:00</span></h4>
+									<h3><%= data.totals.maxNightTwitch[0] %></h3>
+									<h2>
+										<% if (data.links.maxNightLink) { %> 
+											<%= data.totals.maxNightTwitch[1].v || 0 %>
+											<br/>
+											<a class="more" href="<%= data.links.maxNightLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
+										<% } else { %> 
+											<%= data.totals.maxNightTwitch[1].v || 0 %>
+										<% } %>
+									</h2>
+									<div class="d-flex mt-auto justify-content-end px-3 pb-3">
+										<i class="bi bi-twitch"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="stats-youtube" class="stats row g-4 py-5 row-cols-1 row-cols-lg-5">
+							<div class="col">
+								<div class="feature d-flex flex-column">
+									<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+										<img src="/images/maxDia.svg" width="50" height="50"/>
+									</div>
+									<h4>M&aacute;x. del d&iacute;a <br/><span class="aclaracion">24hs</span></h4>
+									<h3><%= (data.totals.maxDayYoutube[1] > 0) ? data.totals.maxDayYoutube[0] : 'sin datos'  %></h3>
+									<h2>
+										<% if (data.links.maxDayLink) { %> 
+											<%= data.totals.maxDayYoutube[1] %>
+										<br/>
+										<a class="more" href="<%= data.links.maxDayLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
+										<% } else { %> 
+											<%= data.totals.maxDayYoutube[1] %>
+										<% } %>
+									</h2>
+									<div class="d-flex mt-auto justify-content-end px-3 pb-3">
+										<i class="bi bi-youtube"></i>
+									</div>
+								</div>
+							</div>
+							<div class="col">
+								<div class="feature d-flex flex-column">
+									<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+										<img src="/images/maxManiana.svg" width="50" height="50"/>
+									</div>
+									<h4>M&aacute;x. de la ma&ntilde;ana <br/><span class="aclaracion">06:00 a 10:00</span></h4>
+									<h3><%= data.totals.maxMorningYoutube[0] %></h3>
+									<h2>
+										<% if (data.links.maxMorningLink) { %> 
+											<%= data.totals.maxMorningYoutube[1].v || 0 %>
+										<br/>
+										<a class="more" href="<%= data.links.maxMorningLink.linkValue %>" target="_blank">
+											<img src="images/Twitter.svg" width="30" height="30" />
+										</a>
+										<% } else { %> 
+											<%= data.totals.maxMorningYoutube[1].v || 0 %>
+										<% } %>
+									</h2>
+									<div class="d-flex mt-auto justify-content-end px-3 pb-3">
+										<i class="bi bi-youtube"></i>
+									</div>
+								</div>
+							</div>
+							<div class="col">
+								<div class="feature d-flex flex-column">
+									<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+										<img src="/images/maxMediodia.svg" width="50" height="50"/>
+									</div>
+									<h4>M&aacute;x. del mediod&iacute;a <br/><span class="aclaracion">10:00 a 14:00</span></h4>
+									<h3><%= data.totals.maxMiddayYoutube[0] %></h3>
+									<h2>
+										<% if (data.links.maxMiddayLink) { %> 
+											<%= data.totals.maxMiddayYoutube[1].v || 0 %>
+											<br/>
+											<a class="more" href="<%= data.links.maxMiddayLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
+										<% } else { %> 
+											<%= data.totals.maxMiddayYoutube[1].v || 0 %>
+										<% } %>
+									</h2>
+									<div class="d-flex mt-auto justify-content-end px-3 pb-3">
+										<i class="bi bi-youtube"></i>
+									</div>
+								</div>
+							</div>
+							<div class="col">
+								<div class="feature d-flex flex-column">
+									<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+										<img src="/images/maxTarde.svg" width="50" height="50"/>
+									</div>
+									<h4>M&aacute;x. de la tarde <br/><span class="aclaracion">14:00 a 18:00</span></h4>
+									<h3><%= data.totals.maxAfternoonYoutube[0] %></h3>
+									<h2>
+										<% if (data.links.maxAfternoonLink) { %> 
+											<%= data.totals.maxAfternoonYoutube[1].v || 0 %>
+											<br/>
+											<a class="more" href="<%= data.links.maxAfternoonLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
+										<% } else { %> 
+											<%= data.totals.maxAfternoonYoutube[1].v || 0 %>
+										<% } %>
+									</h2>
+									<div class="d-flex mt-auto justify-content-end px-3 pb-3">
+										<i class="bi bi-youtube"></i>
+									</div>
+								</div>
+							</div>
+							<div class="col">
+								<div class="feature d-flex flex-column">
+									<div class="d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+										<img src="/images/maxNoche.svg" width="50" height="50"/>
+									</div>
+									<h4>M&aacute;x. de la noche <br/><span class="aclaracion">18:00 a 23:00</span></h4>
+									<h3><%= data.totals.maxNightYoutube[0] %></h3>
+									<h2>
+										<% if (data.links.maxNightLink) { %> 
+											<%= data.totals.maxNightYoutube[1].v || 0 %>
+											<br/>
+											<a class="more" href="<%= data.links.maxNightLink.linkValue %>" target="_blank"><img src="images/Twitter.svg" width="30" height="30" /></a>
+										<% } else { %> 
+											<%= data.totals.maxNightYoutube[1].v || 0 %>
+										<% } %>
+									</h2>
+									<div class="d-flex mt-auto justify-content-end px-3 pb-3">
+										<i class="bi bi-youtube"></i> 
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="sum-data">
+						<div id="sum-totals" class="tbl row g-4 py-5 row-cols-1 row-cols-lg-3">
+							<table class="table">
+								<thead>
+									<tr>
+										<th scope="col">Hora</th>
+										<% for (var i=0; i<data.values.channels.length; i++) { %>
+											<th scope="col">
+												<div class="my-3 c-icon">
+													<img src="/images/<%= data.values.channels[i] %>.svg" width="40" height="40"/>
+												</div>
+												<%= data.values.channels[i]; %>
+											</th>
+											<% } %>
+									</tr>
+								</thead>
+								<tbody>
+									<% for(var i in data.values.totals) { %>
+										<tr>
+											<td>
+												<%= data.adjustDate(new Date(i)) + ":" + String(new Date(i).getMinutes()).padStart(2, '0'); %>
+											</td>
+											<% for (var j=0; j<data.values.channels.length; j++) { %>
+												<td>
+													<%= data.getByIndex(i, data.values.totals, data.values.channels[j]); %>
+												</td>
+											<% } %>
+										</tr>
+										<% } %>
+								</tbody>
+							</table>
+						</div>
+						<div id="sum-twitch" class="tbl d-none row g-4 py-5 row-cols-1 row-cols-lg-3">
+							<table class="table">
+								<thead>
+									<tr>
+										<th scope="col">Hora</th>
+										<% for (var i=0; i<data.values.channels.length; i++) { %>
+											<th scope="col">
+												<div class="my-3">
+													<img src="/images/<%= data.values.channels[i] %>.svg" width="40" height="40"/>
+												</div>
+												<%= data.values.channels[i]; %>
+											</th>
+											<% } %>
+									</tr>
+								</thead>
+								<tbody>
+									<% for(var i in data.values.twitch) { %>
+										<tr>
+											<td>
+												<%= data.adjustDate(new Date(i)) + ":" + String(new Date(i).getMinutes()).padStart(2, '0'); %>
+											</td>
+											<% for (var j=0; j<data.values.channels.length; j++) { %>
+												<td>
+													<% if (data.isPremium === true) { %>
+														<%
+															var channelId = data.getChannelId(data.values.channels[j], data.channelData, 'twitch');
+															if (channelId) { 
+																const byIndex = data.getByIndex(i, data.values.twitch, data.values.channels[j]);
+																const date = data.getDate(i, data.values.twitch, data.values.channels[j]);
+																const filename = data.getFilename(data.values.channels[j], date, 'twitch');
+																if (filename) {
+														%>													
+																	<a class="imageLink" href="images/twitch/<%= filename %>" target="_blank">
+																		<%= byIndex  %>
+																	</a>
+															<% } else { %>
+																<%= data.getByIndex(i, data.values.twitch, data.values.channels[j]); %>
+															<% } %>
+														<%  } else { %>
+															<%= data.getByIndex(i, data.values.twitch, data.values.channels[j]); %>
+														<%  } %>
 													<% } else { %>
 														<%= data.getByIndex(i, data.values.twitch, data.values.channels[j]); %>
 													<% } %>
-												<%  } else { %>
-													<%= data.getByIndex(i, data.values.twitch, data.values.channels[j]); %>
-												<%  } %>
-											<% } else { %>
-												<%= data.getByIndex(i, data.values.twitch, data.values.channels[j]); %>
+												</td>
 											<% } %>
-										</td>
-									<% } %>
-								</tr>
-								<% } %>
-						</tbody>
-					</table>
-				</div>
-				<div id="sum-youtube" class="tbl d-none row g-4 py-5 row-cols-1 row-cols-lg-3">
-					<table class="table">
-						<thead>
-							<tr>
-								<th scope="col">Hora</th>
-								<% for (var i=0; i<data.values.channels.length; i++) { %>
-									<th scope="col">
-										<div class="my-3">
-											<img src="/images/<%= data.values.channels[i] %>.svg" width="40" height="40"/>
-										</div>
-										<%= data.values.channels[i]; %>
-									</th>
-									<% } %>
-							</tr>
-						</thead>
-						<tbody>
-							<% for(var i in data.values.youtube) { %>
-								<tr>
-									<td>
-										<%= data.adjustDate(new Date(i)) + ":" + String(new Date(i).getMinutes()).padStart(2, '0'); %>
-									</td>
-									<% for (var j=0; j<data.values.channels.length; j++) { %>
-										<td>
-											<% if (data.isPremium === true) { %>
-												<%
-													var channelId = data.values.channels[j];
-													if (channelId) { 
-														const byIndex = data.getByIndex(i, data.values.youtube, data.values.channels[j]);
-														const date = data.getDate(i, data.values.youtube, data.values.channels[j]);
-														const filename = data.getFilename(channelId, date, 'youtube');
-														if (filename) {
-												%>													
-															<a class="imageLink" href="images/youtube/<%= filename %>" target="_blank">
-																<%= byIndex  %>
-															</a>
+										</tr>
+										<% } %>
+								</tbody>
+							</table>
+						</div>
+						<div id="sum-youtube" class="tbl d-none row g-4 py-5 row-cols-1 row-cols-lg-3">
+							<table class="table">
+								<thead>
+									<tr>
+										<th scope="col">Hora</th>
+										<% for (var i=0; i<data.values.channels.length; i++) { %>
+											<th scope="col">
+												<div class="my-3">
+													<img src="/images/<%= data.values.channels[i] %>.svg" width="40" height="40"/>
+												</div>
+												<%= data.values.channels[i]; %>
+											</th>
+											<% } %>
+									</tr>
+								</thead>
+								<tbody>
+									<% for(var i in data.values.youtube) { %>
+										<tr>
+											<td>
+												<%= data.adjustDate(new Date(i)) + ":" + String(new Date(i).getMinutes()).padStart(2, '0'); %>
+											</td>
+											<% for (var j=0; j<data.values.channels.length; j++) { %>
+												<td>
+													<% if (data.isPremium === true) { %>
+														<%
+															var channelId = data.values.channels[j];
+															if (channelId) { 
+																const byIndex = data.getByIndex(i, data.values.youtube, data.values.channels[j]);
+																const date = data.getDate(i, data.values.youtube, data.values.channels[j]);
+																const filename = data.getFilename(channelId, date, 'youtube');
+																if (filename) {
+														%>													
+																	<a class="imageLink" href="images/youtube/<%= filename %>" target="_blank">
+																		<%= byIndex  %>
+																	</a>
+															<% } else { %>
+																<%= data.getByIndex(i, data.values.youtube, data.values.channels[j]); %>
+															<% } %>
+														<%  } else { %>
+															<%= data.getByIndex(i, data.values.youtube, data.values.channels[j]); %>
+														<%  } %>
 													<% } else { %>
 														<%= data.getByIndex(i, data.values.youtube, data.values.channels[j]); %>
 													<% } %>
-												<%  } else { %>
-													<%= data.getByIndex(i, data.values.youtube, data.values.channels[j]); %>
-												<%  } %>
-											<% } else { %>
-												<%= data.getByIndex(i, data.values.youtube, data.values.channels[j]); %>
+												</td>
 											<% } %>
-										</td>
-									<% } %>
-								</tr>
-								<% } %>
-						</tbody>
-					</table>
+										</tr>
+										<% } %>
+								</tbody>
+							</table>
+						</div>
+					</div>
 				</div>
 				<% if (data.activeReport) { %> 
 				<div id="reports" class="tbl d-none row g-4 py-5 row-cols-1 row-cols-lg-3">
