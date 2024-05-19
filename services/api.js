@@ -5,6 +5,13 @@ function adjustDate(date) {
   return newDate;
 }
 
+function formatDate(date) {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // January is 0!
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+}
+
 const getMaxDay = async(collection, dateFrom=null, dateTo = null, platform=null, multipleQuery=null, channel=null) => {
     const today = new Date();
     
@@ -596,6 +603,51 @@ const getMaxDayPerChannelAndPlatform = async(collection, channel, platform) => {
   }
 }
 
+const getPeaksFiltered = async(collection, dateFrom, dateTo, channels, platform) => {
+  const initDate = new Date(dateFrom);
+  const endDate = new Date(dateTo);
+
+  initDate.setDate(initDate.getDate() + 1);
+  endDate.setDate(endDate.getDate() + 1);
+
+  let datesBetween = eachDayOfInterval({ 
+    start: initDate, 
+    end: endDate
+  });
+
+  if (datesBetween.length === 1) {
+    datesBetween = [datesBetween[0]];
+  }
+
+  let providedPlatform;
+  if (platform === 'all') {
+    providedPlatform = null;
+  } else {
+    providedPlatform = platform;
+  }
+
+  const response = {};
+
+  for (let i=0; i<datesBetween.length; i++) {
+    const realDateFrom = startOfDay(datesBetween[i]);
+    const realDateTo = endOfDay(datesBetween[i]);
+
+    const key = formatDate(datesBetween[i]);
+    if (!response[key]) response[key] = {};
+    for (let j=0; j<channels.length; j++) {
+      const data = await getMaxDay(collection, realDateFrom, realDateTo, providedPlatform, null, channels[j]);
+      if (!response[key][channels[j]]) response[key][channels[j]]
+      if (data && data.value) {
+        response[key][channels[j]] = data.value;
+      } else {
+        response[key][channels[j]] = 0;
+      }
+    }
+  }
+
+  return response;
+}
+
 module.exports = {
     getMaxDay,
     getMaxBetweenHours,
@@ -603,5 +655,6 @@ module.exports = {
     getGrouped,
     getAccumulated,
     getMaxDayPerChannelAndPlatform,
-    getMaxBetweenHoursPerChannelAndPlatform
+    getMaxBetweenHoursPerChannelAndPlatform,
+    getPeaksFiltered
 }

@@ -1,0 +1,61 @@
+<div id="stats-chart" class="stats">
+  <h3>Rango de fechas</h3>
+    <div class="input-group mt-3">
+      <span class="input-group-text">Fecha desde:</span>
+      <input type="date" class="form-control" id="charts-date-from"/>
+    </div>
+    <div class="input-group mt-3">
+      <span class="input-group-text">Fecha hasta:</span>
+      <input type="date" class="form-control" id="charts-date-to"/>
+    </div>
+    <div class="input-group mt-3">
+      <select class="form-select" id="charts-platform">
+        <option value="">Plataforma</option>
+        <option value="all">Todas</option>
+        <option value="twitch">Twitch</option>
+        <option value="youtube">Youtube</option>
+      </select>
+      <select class="form-select" id="chart-type">
+        <option value="">Tipo de gráfico</option>
+        <option value="day_peaks">Picos del día</option>
+      </select>     
+    </div>
+    <div class="input-group mt-3">
+      <select placeholder="Canales" class="form-select" multiple="true" id="channels">
+        <% for (const i in data.channelData) { %>
+          <option value="<%-data.channelData[i].name %>"><%-data.channelData[i].name %></option>
+        <% } %>
+      </select>
+    </div>
+    <div class="input">
+      <button class="btn btn-success querier mt-3" id="charter-btn">Generar Gráfico</button>
+    </div>
+</div>
+
+<div id="sum-chart" class="tbl mt-3">
+  <div id="chart">
+    
+  </div>
+</div>
+
+<div id="switcher" class="mt-3">
+  <div id="switcher-controls"></div>
+  <div id="sum-chart" class="stats row g-4 py-5 row-cols-1 row-cols-lg-5 gx-2"></div>
+  <div id="day-chart"></div>
+</div>
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+  <div id="toast-success" class="toast bg-success text-white hide" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-body">
+      <span id="toast-body-content"></span>
+    </div>
+  </div>
+</div>
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 12">
+  <div id="toast-error" class="toast bg-danger text-white hide" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-body">
+      <span id="toast-body-content-error"></span>
+    </div>
+  </div>
+</div>

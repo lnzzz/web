@@ -624,6 +624,26 @@ app.get('/data/totals', jsonMiddleware, async (req, res) => {
   })
 });
 
+app.get('/data/maxes-per-channel-filtered', jsonMiddleware, async(req, res) => {
+  const qChannels = req.query.channels.split(',');
+  const qDateFrom = req.query.dateFrom;
+  const qDateTo = req.query.dateTo;
+  const qPlatforms = req.query.platform;
+  const db = client.db(dbName);
+  const channelStatsCol = db.collection('channel-stats');
+
+  const data = await apiService.getPeaksFiltered(
+    channelStatsCol, 
+    qDateFrom, 
+    qDateTo,
+    qChannels,
+    qPlatforms
+  );
+
+  res.status(200).send(data);
+
+});
+
 app.get('/data/maxes-per-channel', jsonMiddleware, async(req, res) => {
   const db = client.db(dbName);
   const channelStatsCol = db.collection('channel-stats');

@@ -39,6 +39,7 @@
 
 						<% if (data.isPremium) { %>
 							<li class="nav-item"><a href="#" id="query-btn" class="nav-link" onClick="display('query'); return false">Consultas</a></li>
+							<li class="nav-item"><a href="#" id="chart-btn" class="nav-link" onClick="display('chart'); return false">Gráficos</a></li>
 						<% } %>
 					</div>
 					<li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
@@ -523,7 +524,7 @@
 
 				<% if (data.isPremium) { %>
 					<%- include('templates/premium-query'); %>
-					<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+					<%- include('templates/charts'); %>
 				<% } %>
 			</div>
 			<footer class="py-3 my-4 mt-auto">
@@ -604,7 +605,10 @@
 			</style>
 		</div>
 	<% if (data.isPremium) { %>
-	<script src="/prem.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+		<script src="/prem.js"></script>
+		<script src="/charts.js"></script>
 	<% } %>
     <script src="/main.js"></script>
 	</body>
