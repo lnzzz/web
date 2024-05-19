@@ -603,6 +603,78 @@ const getMaxDayPerChannelAndPlatform = async(collection, channel, platform) => {
   }
 }
 
+const getHourlyValues = async(collection, dateFrom, dateTo, channels, platform) => {
+  const startTime = new Date(dateFrom);
+  startTime.setHours(6, 0, 0, 0);
+  startTime.setDate(startTime.getDate() +1);
+
+  const endTime = new Date(dateTo);
+  endTime.setHours(23, 0, 0, 0);
+  endTime.setDate(endTime.getDate() + 1);
+
+  let datesBetween = eachDayOfInterval({ start: startTime, end: endTime });
+
+  const obj = {};
+
+  for (let i=0; i<datesBetween.length; i++) {
+    const startDate = startOfDay(datesBetween[i]);
+    const endDate = endOfDay(datesBetween[i]);
+    
+    const match = {
+      $match: {
+        date: { $gte: startDate, $lte: endDate }
+      }
+    }
+
+    if (channels) {
+      match.$match.channel = {
+        $in: channels
+      }
+    }
+
+    if (platform && platform !== 'all') {
+      match.$match.platform = {
+        $eq: platform
+      }
+    }
+
+    const totals = await collection.aggregate([
+      match,
+      {
+        $group: {
+          _id: {
+            date: { $dateToString: { format: "%Y-%m-%d %H:%M", date: "$date" } },
+            channel: "$channel"
+          },
+          totalViewCount: { $sum: "$viewCount" }
+        }
+      },
+      {
+          $sort: {
+            "_id.date": -1,
+            "_id.channel": 1
+          }
+        }
+    ]).toArray();
+
+    
+    for (const j in totals) {
+      if (!obj[totals[j]._id.date]) {
+        obj[totals[j]._id.date] = {};
+      }
+      for (const x in channels) {
+        if (totals[j]._id.channel === channels[x]) {
+          obj[totals[j]._id.date][channels[x]] = totals[j].totalViewCount || 0;
+        } else {
+          obj[totals[j]._id.date][channels[x]] = 0;
+        }
+      }
+    }
+  }
+  return obj;
+  
+}
+
 const getPeaksFiltered = async(collection, dateFrom, dateTo, channels, platform) => {
   const initDate = new Date(dateFrom);
   const endDate = new Date(dateTo);
@@ -656,5 +728,6 @@ module.exports = {
     getAccumulated,
     getMaxDayPerChannelAndPlatform,
     getMaxBetweenHoursPerChannelAndPlatform,
-    getPeaksFiltered
+    getPeaksFiltered,
+    getHourlyValues
 }

@@ -2,6 +2,10 @@ const apiCalls = {
     day_peaks: {
         uri: "/data/maxes-per-channel-filtered",
         method: "GET"
+    },
+    hourly_vals: {
+        uri: "/data/hourly-values",
+        method: "GET"
     }
 }
 
@@ -21,12 +25,15 @@ function transformDataToObject(inputObject) {
     return dataArray;
 }
 
-const generateChart = async(chartType, dates) => {
+const resetChartContainer = async () => {
     var chartContainer = document.querySelector("#chart");
     while (chartContainer.firstChild) {
         chartContainer.removeChild(chartContainer.firstChild);
     }
+}
 
+const generatePeakChart = async(dates) => {
+    await resetChartContainer();
     const formattedSeries = transformDataToObject(dates);
 
     var options = {
@@ -46,13 +53,58 @@ const generateChart = async(chartType, dates) => {
         }
       },
       dataLabels: {
-        enabled: false
+        enabled: true
       },
       stroke: {
         curve: 'straight'
       },
       title: {
         text: 'Picos del día',
+        align: 'left'
+      },
+      grid: {
+        row: {
+          colors: ['#f3f3f3', '#fff'],
+          opacity: 0.5
+        },
+      },
+      xaxis: {
+        categories: Object.keys(dates),
+      }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
+}
+
+const generateHourlyChart = async(dates) => {
+    await resetChartContainer();
+    const formattedSeries = transformDataToObject(dates);
+    
+    var options = {
+        series: formattedSeries,
+        chart: {
+        type: 'line',
+        zoom: {
+          enabled: true
+        },
+        height: 500,
+        background: '#FFF',
+        padding: {
+            top: 20,
+            right: 20,
+            bottom: 20,
+            left: 20
+        }
+      },
+      dataLabels: {
+        enabled: true
+      },
+      stroke: {
+        curve: 'straight'
+      },
+      title: {
+        text: 'Viewers cada 5 min',
         align: 'left'
       },
       grid: {
@@ -124,7 +176,11 @@ domReady(() => {
                 selectedChannelValues
             );
 
-            await generateChart(chartTypeSelect.value, await data.json());
+            if (chartTypeSelect.value === 'day_peaks') {
+                await generatePeakChart(await data.json());
+            } else if (chartTypeSelect.value === 'hourly_vals') {
+                await generateHourlyChart(await data.json());
+            }
             charterBtn.removeAttribute('disabled');
             charterBtn.innerHTML = "Generar Gráfico";
         } catch (error) {
