@@ -98,7 +98,7 @@ const generateHourlyChart = async(dates) => {
         }
       },
       dataLabels: {
-        enabled: true
+        enabled: false
       },
       stroke: {
         curve: 'straight'
