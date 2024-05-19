@@ -710,8 +710,8 @@ const getPeaksFiltered = async(collection, dateFrom, dateTo, channels, platform)
   const response = {};
 
   for (let i=0; i<datesBetween.length; i++) {
-    const realDateFrom = startOfDay(datesBetween[i]);
-    const realDateTo = endOfDay(datesBetween[i]);
+    const realDateFrom = subHours(startOfDay(datesBetween[i]), 3);
+    const realDateTo = subHours(endOfDay(datesBetween[i]), 3);
 
     const key = formatDate(datesBetween[i]);
     if (!response[key]) response[key] = {};
