@@ -5,6 +5,11 @@ function adjustDate(date) {
   return newDate;
 }
 
+function formatHours(date) {
+  const newDate = subHours(date, 3);
+  return newDate.getHours();
+}
+
 function formatDate(date) {
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0'); // January is 0!
@@ -659,12 +664,13 @@ const getHourlyValues = async(collection, dateFrom, dateTo, channels, platform) 
 
     
     for (const j in totals) {
-      if (!obj[totals[j]._id.date]) {
-        obj[totals[j]._id.date] = {};
+      const datex = formatHours(totals[j]._id.date);
+      if (!obj[datex]) {
+        obj[datex] = {};
       }
       for (const x in channels) {
         if (totals[j]._id.channel === channels[x]) {
-          obj[totals[j]._id.date][channels[x]] = totals[j].totalViewCount || 0;
+          obj[datex][channels[x]] = totals[j].totalViewCount || 0;
         }
       }
     }
