@@ -103,7 +103,8 @@ const generateHourlyChart = async(dates) => {
         enabled: false
       },
       stroke: {
-        curve: 'straight'
+        curve: 'straight',
+        width: 1
       },
       title: {
         text: 'Viewers cada 5 min',
