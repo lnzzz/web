@@ -80,6 +80,9 @@ const generatePeakChart = async(dates) => {
 const generateHourlyChart = async(dates) => {
     await resetChartContainer();
     const formattedSeries = transformDataToObject(dates);
+    const datesKeys = Object.keys(dates);
+
+    console.log(datesKeys);
     
     var options = {
         series: formattedSeries,
@@ -114,7 +117,7 @@ const generateHourlyChart = async(dates) => {
         },
       },
       xaxis: {
-        categories: Object.keys(dates),
+        categories: datesKeys,
       }
     };
 
