@@ -688,9 +688,6 @@ const getPeaksFiltered = async(collection, dateFrom, dateTo, channels, platform)
   const initDate = new Date(dateFrom);
   const endDate = new Date(dateTo);
 
-  initDate.setDate(initDate.getDate() + 1);
-  endDate.setDate(endDate.getDate() + 1);
-
   let datesBetween = eachDayOfInterval({ 
     start: initDate, 
     end: endDate
@@ -710,8 +707,8 @@ const getPeaksFiltered = async(collection, dateFrom, dateTo, channels, platform)
   const response = {};
 
   for (let i=0; i<datesBetween.length; i++) {
-    const realDateFrom = subHours(startOfDay(datesBetween[i]), 3);
-    const realDateTo = subHours(endOfDay(datesBetween[i]), 3);
+    const realDateFrom = startOfDay(datesBetween[i]);
+    const realDateTo = endOfDay(datesBetween[i]);
 
     const key = formatDate(datesBetween[i]);
     if (!response[key]) response[key] = {};
