@@ -52,7 +52,7 @@ const generateChart = async(chartType, dates) => {
         curve: 'straight'
       },
       title: {
-        text: 'PIcos del día',
+        text: 'Picos del día',
         align: 'left'
       },
       grid: {
