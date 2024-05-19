@@ -7,7 +7,7 @@ function adjustDate(date) {
 
 function formatHours(date) {
   const newDate = subHours(date, 3);
-  return newDate.getHours();
+  return newDate;
 }
 
 function formatDate(date) {
