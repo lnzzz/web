@@ -1,3 +1,5 @@
+let activeChart;
+
 const apiCalls = {
     day_peaks: {
         uri: "/data/maxes-per-channel-filtered",
@@ -23,13 +25,6 @@ function transformDataToObject(inputObject) {
         }
     }
     return dataArray;
-}
-
-const resetChartContainer = async () => {
-    var chartContainer = document.querySelector("#chart");
-    while (chartContainer.firstChild) {
-        chartContainer.removeChild(chartContainer.firstChild);
-    }
 }
 
 const generatePeakChart = async(dates) => {
@@ -73,15 +68,15 @@ const generatePeakChart = async(dates) => {
       }
     };
 
-    var chart = new ApexCharts(document.querySelector("#chart"), options);
-    chart.render();
+    activeChart = new ApexCharts(document.querySelector("#chart"), options);
+    activeChart.render();
 }
 
 const generateHourlyChart = async(dates) => {
     await resetChartContainer();
     const sortedKeys = Object.keys(dates).sort((a, b) => new Date(a) - new Date(b));
     sortedKeys.sort();
-    
+
     const sortedData = {};
     sortedKeys.forEach(date => {
         const key = date;
@@ -130,8 +125,8 @@ const generateHourlyChart = async(dates) => {
       }
     };
 
-    var chart = new ApexCharts(document.querySelector("#chart"), options);
-    chart.render();
+    activeChart = new ApexCharts(document.querySelector("#chart"), options);
+    activeChart.render();
 }
 
 const callApi = async(dateFrom, dateTo, platform, chartType, channels) => {

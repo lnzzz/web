@@ -1,5 +1,12 @@
+const resetChartContainer = async () => {
+   if (activeChart) {
+    activeChart.destroy();
+    activeChart = null;
+   }
+}
+
 function display(which) {
-    
+    resetChartContainer();   
     document.querySelectorAll("div.tbl").forEach((el) => { el.classList.add('d-none'); });
     document.querySelectorAll("div.stats").forEach((el) => { el.classList.add('d-none') });
     document.querySelectorAll("a.nav-link").forEach((el) => { el.classList.remove("active") });
