@@ -678,6 +678,11 @@ const getHourlyValues = async(collection, dateFrom, dateTo, channels, platform) 
           obj[datex][channels[x]] = totals[j].totalViewCount || 0;
         }
       }
+      for (const x in channels) {
+        if (!obj[datex][channels[x]]) {
+          obj[datex][channels[x]] = 0;
+        }
+      }
     }
   }
   return obj;
@@ -722,7 +727,6 @@ const getPeaksFiltered = async(collection, dateFrom, dateTo, channels, platform)
       }
     }
   }
-
   return response;
 }
 

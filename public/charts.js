@@ -79,7 +79,16 @@ const generatePeakChart = async(dates) => {
 
 const generateHourlyChart = async(dates) => {
     await resetChartContainer();
-    const formattedSeries = transformDataToObject(dates);
+    const sortedKeys = Object.keys(dates).sort((a, b) => new Date(a) - new Date(b));
+    sortedKeys.sort();
+    
+    const sortedData = {};
+    sortedKeys.forEach(date => {
+        const key = date;
+        sortedData[key] = dates[key];
+    });
+
+    const formattedSeries = transformDataToObject(sortedData);
     const datesKeys = Object.keys(dates).sort((a, b) => new Date(a) - new Date(b));
     datesKeys.sort();
     
