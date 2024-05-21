@@ -113,7 +113,7 @@ function getFilename(channelId, date, platform) {
   const month = realDate.getMonth()+1;
   const day = realDate.getDate();
   const filename = channelId + "_" + year + month + day + "_" + hours + "_" + minutes + ".jpg";
-  conbsole.log(filename);
+  console.log(filename);
   const fullPath = `./public/images/${platform}/${filename}`;
   if (fs.existsSync(fullPath)) {
     return filename;
