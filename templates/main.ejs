@@ -452,7 +452,7 @@
 																const filename = data.getFilename(data.values.channels[j], date, 'twitch');
 																if (filename) {
 														%>													
-																	<a class="imageLink" href="images/twitch/<%= filename %>" target="_blank">
+																	<a data-toggle="tooltip" title="<img src='images/twitch/<%= filename %>' width='375' height='211'/>" class="imageLink" href="images/twitch/<%= filename %>" target="_blank">
 																		<%= byIndex  %>
 																	</a>
 															<% } else { %>

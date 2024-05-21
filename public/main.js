@@ -44,3 +44,11 @@ display('totals');
 
 const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
 const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl, { html: true }))
+
+
+const toolTipTriggerList = document.querySelectorAll('a[data-toggle="tooltip"]')
+const tooltipList = [...toolTipTriggerList].map(toolTipTriggerEl => new bootstrap.Tooltip(toolTipTriggerEl, { 
+    animated: 'fade', 
+    placement: 'left', 
+    html: true
+}))
