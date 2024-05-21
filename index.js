@@ -107,7 +107,7 @@ function getChannelId (channelName, channelsData, platform) {
 
 function getFilename(channelId, date, platform) {
   const realDate = new Date(date);
-  const hours = realDate.getHours() - 3;
+  const hours = realDate.getHours();
   const minutes = String(realDate.getMinutes()).padStart(2, '0');
   const year = realDate.getFullYear();
   const month = realDate.getMonth()+1;
