@@ -161,7 +161,7 @@ const getMaxDay = async(collection, platform=null) => {
     return sortedChannelViewCounts;
 }
 
-const getLast10Grouped = async(channelStatsCol) => {
+const getValuesGrouped = async(channelStatsCol) => {
     const currentDate = new Date();
     
     const todayAt6 = new Date(currentDate.setHours(6, 0, 0, 0));
@@ -286,5 +286,5 @@ const getLast10Grouped = async(channelStatsCol) => {
 module.exports = {
     getMaxBetweenHours,
     getMaxDay,
-    getLast10Grouped
+    getValuesGrouped
 }

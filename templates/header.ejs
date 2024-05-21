@@ -9,10 +9,10 @@
             <div class="div2">
             </div>
             <div class="div3">
-                <% for (var i=0; i<data.values.channels.length; i++) { %>
+                <% for (var i=0; i<data.channelData.length; i++) { %>
                     <% 
-                        const twitchLink = data.getLink(data.values.channels[i], data.channelData, 'twitch', false);
-                        const youtubeLink = data.getLink(data.values.channels[i], data.channelData, 'youtube', false);
+                        const twitchLink = data.getLink(data.channelData[i], 'twitch', false);
+                        const youtubeLink = data.getLink(data.channelData[i], 'youtube', false);
                         if (twitchLink && youtubeLink) {
                     %>
                         <a tabindex="0"
@@ -29,7 +29,7 @@
                     <% } else if (!twitchLink && youtubeLink) { %>
                         <a class="btn nopadded" href="<%= youtubeLink %>" target="_blank">
                     <% } %>
-                        <img class="c-icon" src="/images/<%= data.values.channels[i] %>.svg" width="50" height="50"/>
+                        <img class="c-icon" src="/images/<%= data.channelData[i].name %>.svg" width="50" height="50"/>
                     </a>
                 <% } %>
             </div>

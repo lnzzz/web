@@ -13,6 +13,26 @@ const getChannels = async(channelsCol) => {
       return groupedArray;
 }
 
+const getPlatforms = async(channelsCol) => {
+  const result = await channelsCol.aggregate([
+    {
+      $group: {
+        _id: null,
+        platforms: { $addToSet: "$platform" }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        platforms: 1
+      }
+    }
+  ]).toArray();
+
+  return result[0].platforms;
+}
+
 module.exports = {
-    getChannels
+    getChannels,
+    getPlatforms
 }
