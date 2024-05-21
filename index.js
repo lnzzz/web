@@ -93,7 +93,10 @@ function getByIndex(index, array, channel) {
 function getDate(index, array, channel) {
   const item = (array[index].find(item => item._id.channel.toLowerCase() === channel.toLowerCase()))
   if (!item) return null;
-  return item._id.date;
+
+  const date = new Date(item._id.date);
+  const realDate = subHours(date, 3);
+  return realDate;
 }
 
 function getChannelId (channelName, channelsData, platform) {
@@ -106,9 +109,8 @@ function getChannelId (channelName, channelsData, platform) {
 }
 
 function getFilename(channelId, date, platform) {
-  console.log(date);
   const realDate = new Date(date);
-  const hours = realDate.getHours() - 3;
+  const hours = realDate.getHours();
   const minutes = String(realDate.getMinutes()).padStart(2, '0');
   const year = realDate.getFullYear();
   const month = realDate.getMonth()+1;
