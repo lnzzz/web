@@ -452,7 +452,7 @@
 																const filename = data.getFilename(data.values.channels[j], date, 'twitch');
 																if (filename) {
 														%>													
-																	<a data-toggle="tooltip" title="<img src='images/twitch/<%= filename %>' width='375' height='211'/>" class="imageLink" href="images/twitch/<%= filename %>" target="_blank">
+																	<a class="imageLink" href="images/twitch/<%= filename %>" target="_blank">
 																		<%= byIndex  %>
 																	</a>
 															<% } else { %>
@@ -618,6 +618,7 @@
 		<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 		<script src="/prem.js"></script>
 		<script src="/charts.js"></script>
+
 	<% } %>
     <script src="/main.js"></script>
 	</body>
