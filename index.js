@@ -108,15 +108,14 @@ function getChannelId (channelName, channelsData, platform) {
 function getFilename(channelId, date, platform) {
   const realDate = new Date(date);
   const hours = realDate.getHours() - 3;
+
+  console.log(hours);
   const minutes = String(realDate.getMinutes()).padStart(2, '0');
   const year = realDate.getFullYear();
   const month = realDate.getMonth()+1;
   const day = realDate.getDate();
   const filename = channelId + "_" + year + month + day + "_" + hours + "_" + minutes + ".jpg";
   const fullPath = `./public/images/${platform}/${filename}`;
-  
-  console.log(fullPath);
-  console.log(fs.existsSync(fullPath));
   if (fs.existsSync(fullPath)) {
     return filename;
   } else {
