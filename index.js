@@ -100,12 +100,17 @@ function getDate(index, array, channel) {
 }
 
 function getChannelId (channelName, channelsData, platform) {
-  const channelId = channelsData.find((item) => item.name === channelName).items.find((item) => item.platform === platform);
-  if (channelId !== undefined) {
-    return channelId.id;
+  const chData = channelsData.find((item) => item.name === channelName);
+  if (chData.items) {
+    const channelId = chData.items.find((item) => item.platform === platform);
+    if (channelId !== undefined) {
+      return channelId.id;
+    } else {
+      return null;
+    } 
   } else {
     return null;
-  }  
+  }
 }
 
 function getFilename(channelId, date, platform) {
