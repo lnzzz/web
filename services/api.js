@@ -730,6 +730,11 @@ const getPeaksFiltered = async(collection, dateFrom, dateTo, channels, platform)
   return response;
 }
 
+const getIndexes = async(collection) => {
+  const data = await collection.find({}).sort({ _id: -1 }).limit(8).toArray();
+  return data;
+}
+
 module.exports = {
     getMaxDay,
     getMaxBetweenHours,
@@ -739,5 +744,6 @@ module.exports = {
     getMaxDayPerChannelAndPlatform,
     getMaxBetweenHoursPerChannelAndPlatform,
     getPeaksFiltered,
-    getHourlyValues
+    getHourlyValues,
+    getIndexes
 }

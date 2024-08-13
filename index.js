@@ -421,6 +421,13 @@ app.get('/data/query', jsonMiddleware, async(req, res) => {
   });
 })
 
+app.get('/data/indexes', jsonMiddleware, async (req, res) => {
+  const db = client.db(dbName);
+  const indexesCol = db.collection('indexes-data');
+  const indexes = await apiService.getIndexes(indexesCol);
+  res.status(200).send(indexes);
+})
+
 app.get('/data/totals', jsonMiddleware, async (req, res) => {
   const db = client.db(dbName);
   const channelStatsCol = db.collection('channel-stats');
