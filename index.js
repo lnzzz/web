@@ -398,6 +398,12 @@ app.get('/data/accum-channel', jsonMiddleware, async(req, res) => {
 
   if (!channels) {
     channels = await channelService.getChannels(channelsCol);
+  } else {
+    const tmpChannels = [];
+    for (const i in channels) {
+      tmpChannels.push({ name: channels[i]});
+    }
+    channels = tmpChannels;
   }
   res.status(200).send({ data: accumulated, channels: channels });
 });
