@@ -500,7 +500,7 @@ const getGrouped = async(channelStatsCol, dateFrom, dateTo) => {
 };
 
 
-const getAccumulated = async(collection, dateFrom, dateTo, platform) => {
+const getAccumulated = async(collection, dateFrom, dateTo, platform, channels) => {
   const today = new Date();
   const startDate = (dateFrom) ? new Date(dateFrom) : today;
   const dayStart = startOfDay(startDate);
@@ -524,6 +524,11 @@ const getAccumulated = async(collection, dateFrom, dateTo, platform) => {
   if (platform) {
     match.$match['platform'] = platform;
   }
+  if (channels) {
+    match.$match.channel = {
+      $in: channels
+    }
+  }
 
   const data = await collection.aggregate([
     match,
@@ -532,36 +537,45 @@ const getAccumulated = async(collection, dateFrom, dateTo, platform) => {
         _id: {
           channel: "$channel",
           platform: "$platform",
-          date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } }
+          calculatedDate: "$calculatedDate"
         },
-        highestViewCount: { $max: "$viewCount" }
+        accumulatedViews: { $sum: { $toInt: "$statistics.viewCount" } },
+        accumulatedLikes: { $sum: { $toInt: "$statistics.likeCount" } },
+        accumulatedComments: { $sum: { $toInt: "$statistics.commentCount" } },
       }
     },
     {
       $project: {
-        _id: 0,
+        _id: 1,
         channel: "$_id.channel",
         platform: "$_id.platform",
-        highestViewCount: 1,
+        calculatedDate: {
+          $dateToString: { format: "%Y-%m-%d %H:%M", date: "$_id.calculatedDate" }
+        },
+        accumulatedViews: 1,
+        accumulatedLikes: 1,
+        accumulatedComments: 1,
         document: 1
       }
     }
   ]).toArray();
 
-  const channelViewCounts = {};
+  const obj = {}
 
-  data.forEach(item => {
-      const { channel, highestViewCount } = item;
-      if (channelViewCounts[channel]) {
-        channelViewCounts[channel] += highestViewCount;
-      } else {
-        channelViewCounts[channel] = highestViewCount;
-      }
-  });
+  for (const i in data) {
+    if (!obj[data[i].calculatedDate]) {
+      obj[data[i].calculatedDate] = []
+    }
 
-  const sortedChannelViewCounts = Object.entries(channelViewCounts);
-  sortedChannelViewCounts.sort((a, b) => b[1] - a[1]);
-  return sortedChannelViewCounts;
+    obj[data[i].calculatedDate].push({
+      channel: data[i].channel,
+      accumulatedComments: data[i].accumulatedComments,
+      accumulatedLikes: data[i].accumulatedLikes,
+      accumulatedViews: data[i].accumulatedViews
+    })
+  }
+
+  return obj;
 
 }
 

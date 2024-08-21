@@ -28,12 +28,19 @@ const runQuery = async(dateFromInput, dateToInput, platformSelect, opTypeSelect)
     if (!dateToInput.value || dateToInput.value === '') throw new Error('Fecha de fin invalida.');
     if (!platformSelect.value || platformSelect.value === '') throw new Error('Plataforma invalida.');
     if (!opTypeSelect.value || opTypeSelect.value === '') throw new Error('Tipo de operación invalido.');
+
+    const selectedChannels = document.querySelectorAll('#channels-select option:checked');
+    const selectedChannelValues = Array.from(selectedChannels).map(el => el.value).join(",");
     
     const queryParams = {
         dateFrom: dateFromInput.value,
         dateTo: dateToInput.value, 
         platform: platformSelect.value
     };
+
+    if (selectedChannelValues != '') {
+        queryParams.channels = selectedChannelValues
+    }
 
     const queryString = new URLSearchParams(queryParams).toString();
 
@@ -67,8 +74,6 @@ function adjustDate(date) {
     return newDate.getHours();
 }
 
-
-
 domReady(() => {
     const querierBtn = document.querySelector("#querier-btn");
     const dateFromInput = document.querySelector("#date-from");
@@ -95,7 +100,8 @@ domReady(() => {
                     'max-night'
                 ]);
                 await resetStats();
-                await drawAccumulated(await data.json());
+                const response = await data.json();
+                await drawAccumulated(response.data, response.channels);
             }
             querierBtn.removeAttribute('disabled');
             querierBtn.innerHTML = "Consultar";
@@ -112,21 +118,37 @@ domReady(() => {
     const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl, { html: true }));
 });
 
-const drawAccumulated = async (data) => {
+const drawAccumulated = async (data, channels) => {
     let accumHTML = `<div class="mt-3 mb-3">
         <button class='btn btn-success' onClick="downloadCSV('stats-table', 'table_data_accumulated.csv');">Descargar como CSV</button>
         <button class='btn btn-success' onClick="downloadExcel('stats-table', 'table_data_accumulated.xlsx');">Descargar como Excel</button>
     </div>` 
     accumHTML += `<table id='stats-table' class='table'>`;
-    accumHTML += `<thead><th>Canal</th><th>Acumulado</th></thead>
-    `;
-    accumHTML += `<tbody>`;
-    for (let i in data) {
-        accumHTML += `<tr>`;
-        accumHTML += `<td>${data[i][0]}</td>`;
-        accumHTML += `<td>${data[i][1]}</td>`;
-        accumHTML += `</tr>`;
+    accumHTML += `<thead><th>Hora</th>`;
+    for (const i in channels) {
+        accumHTML += `<th>${channels[i].name}</th>`;
     }
+    accumHTML += `</thead>`;
+    accumHTML += `<tbody>`;
+    let totals = {};
+    for (let i in data) {
+        accumHTML += "<tr>";
+        accumHTML += `<td>${i}</td>`;
+        for (const k in channels) {
+            const value = data[i].find(item => item.channel === channels[k].name).accumulatedViews;
+            accumHTML += `<td>${value}</td>`;
+            totals[channels[k].name] = (totals[channels[k].name]) ? totals[channels[k].name] + value : value;
+        }
+        accumHTML += "</tr>";
+    }
+
+    accumHTML += "<tr>";
+    accumHTML += "<td>Totales</td>";
+    for (let i in channels) {
+        accumHTML += `<td>${totals[channels[i].name]}</td>`;
+    }
+    accumHTML += "</tr>";
+    
     accumHTML += `</tbody>`;
     accumHTML += `</table>`;
     document.querySelector("#day-query").innerHTML = accumHTML;

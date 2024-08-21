@@ -379,17 +379,27 @@ app.put('/youtube/channel/:name', jsonMiddleware, async(req, res) => {
 
 app.get('/data/accum-channel', jsonMiddleware, async(req, res) => {
   const db = client.db(dbName);
-  const channelStatsCol = db.collection('channel-stats');
+  const onDemandStatsCol = db.collection('on-demand');
+  const channelsCol = db.collection("channels");
 
   const dateFrom = req.query.dateFrom;
   const dateTo = req.query.dateTo;
+  let channels = req.query.channels;
   let platform = req.query.platform;
   if (platform === 'all') {
     platform = null;
   }
 
-  const accumulated = await apiService.getAccumulated(channelStatsCol, dateFrom, dateTo, platform);
-  res.status(200).send(accumulated);
+  if (channels) {
+    channels = channels.split(',');
+  }
+
+  const accumulated = await apiService.getAccumulated(onDemandStatsCol, dateFrom, dateTo, platform, channels);
+
+  if (!channels) {
+    channels = await channelService.getChannels(channelsCol);
+  }
+  res.status(200).send({ data: accumulated, channels: channels });
 });
 
 app.get('/data/query', jsonMiddleware, async(req, res) => {

@@ -23,6 +23,14 @@
         <option value="accum_channel">Acumulados por canal</option>
       </select>        
     </div>
+    <div class="input-group mt-3">
+      <select placeholder="Canales" class="form-select" multiple="true" id="channels-select">
+        <option value="" selected>Todos</option>
+        <% for (const i in data.channelData) { %>
+          <option value="<%-data.channelData[i].name %>"><%-data.channelData[i].name %></option>
+        <% } %>
+      </select>
+    </div>
     <div class="input">
       <button class="btn btn-success querier mt-3" id="querier-btn">Consultar</button>
     </div>
