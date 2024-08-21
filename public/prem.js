@@ -74,6 +74,20 @@ function adjustDate(date) {
     return newDate.getHours();
 }
 
+function adjustDateV2(date) {
+    const newDate = new Date(date);
+    newDate.setHours(newDate.getHours() - 3);
+    const year = newDate.getFullYear();
+    const month = String(newDate.getMonth() + 1).padStart(2, '0');
+    const day = String(newDate.getDate()).padStart(2, '0');
+    const hours = String(newDate.getHours()).padStart(2, '0');
+    const minutes = String(newDate.getMinutes()).padStart(2, '0');
+
+    const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
+
+    return formattedDate;
+}
+
 domReady(() => {
     const querierBtn = document.querySelector("#querier-btn");
     const dateFromInput = document.querySelector("#date-from");
@@ -133,7 +147,7 @@ const drawAccumulated = async (data, channels) => {
     let totals = {};
     for (let i in data) {
         accumHTML += "<tr>";
-        accumHTML += `<td>${i}</td>`;
+        accumHTML += `<td>${adjustDateV2(i)}</td>`;
         for (const k in channels) {
             const value = data[i].find(item => item.channel === channels[k].name).accumulatedViews;
             accumHTML += `<td>${value}</td>`;
@@ -143,7 +157,7 @@ const drawAccumulated = async (data, channels) => {
     }
 
     accumHTML += "<tr>";
-    accumHTML += "<td>Totales</td>";
+    accumHTML += "<td>TOTALES</td>";
     for (let i in channels) {
         accumHTML += `<td>${totals[channels[i].name]}</td>`;
     }

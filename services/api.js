@@ -557,6 +557,11 @@ const getAccumulated = async(collection, dateFrom, dateTo, platform, channels) =
         accumulatedComments: 1,
         document: 1
       }
+    },
+    {
+      $sort: {
+        "calculatedDate": -1
+      }
     }
   ]).toArray();
 
