@@ -534,8 +534,7 @@ const getAccumulated = async(collection, dateFrom, dateTo, platform) => {
           platform: "$platform",
           date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } }
         },
-        totalViewCount: { $sum: "$viewCount" },
-        documentCount: { $sum: 1 } 
+        highestViewCount: { $max: "$viewCount" }
       }
     },
     {
@@ -543,7 +542,8 @@ const getAccumulated = async(collection, dateFrom, dateTo, platform) => {
         _id: 0,
         channel: "$_id.channel",
         platform: "$_id.platform",
-        averageViewCount: { $round: [{ $divide: ["$totalViewCount", "$documentCount"] }] }
+        highestViewCount: 1,
+        document: 1
       }
     }
   ]).toArray();
@@ -551,11 +551,11 @@ const getAccumulated = async(collection, dateFrom, dateTo, platform) => {
   const channelViewCounts = {};
 
   data.forEach(item => {
-      const { channel, averageViewCount } = item;
+      const { channel, highestViewCount } = item;
       if (channelViewCounts[channel]) {
-        channelViewCounts[channel] += averageViewCount;
+        channelViewCounts[channel] += highestViewCount;
       } else {
-        channelViewCounts[channel] = averageViewCount;
+        channelViewCounts[channel] = highestViewCount;
       }
   });
 
