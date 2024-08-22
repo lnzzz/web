@@ -155,13 +155,6 @@ const drawAccumulated = async (data, channels) => {
         }
         accumHTML += "</tr>";
     }
-
-    accumHTML += "<tr>";
-    accumHTML += "<td>TOTALES</td>";
-    for (let i in channels) {
-        accumHTML += `<td>${totals[channels[i].name]}</td>`;
-    }
-    accumHTML += "</tr>";
     
     accumHTML += `</tbody>`;
     accumHTML += `</table>`;
