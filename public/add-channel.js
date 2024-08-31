@@ -49,7 +49,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 }}),
             });
 
-            handleResponse(response);
+            //handleResponse(response);
+
+            if (response.status === 200){
+              alert('Canal creado exitosamente.');
+                location.reload();
+            } else{
+                alert('error');
+            }
         } catch (error) {
             console.error('Error:', error);
             const toastError = document.getElementById('toast-error');
