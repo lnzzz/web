@@ -164,7 +164,7 @@ const getMaxDay = async(collection, platform=null) => {
 const getValuesGrouped = async(channelStatsCol) => {
     const currentDate = new Date();
     
-    const todayAt6 = new Date(currentDate.setHours(6, 0, 0, 0));
+    const todayAt6 = new Date(currentDate.setHours(0, 0, 0, 0));
 
     const today = new Date();
     const endDate = startOfHour(addHours(today, 1));

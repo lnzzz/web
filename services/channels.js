@@ -32,7 +32,25 @@ const getPlatforms = async(channelsCol) => {
   return result[0].platforms;
 }
 
+const addChannel = async(db,channelData) =>{
+    const channelsCol = db.collection('channels');
+
+    const existingChannel = await channelsCol.findOne({
+        name: channelData.name,
+        platform: channelData.platform
+    });
+
+    if (existingChannel) {
+        throw new Error('Channel already exists.');
+    }
+
+    const result = await channelsCol.insertOne(channelData);
+
+    return true;
+}
+
 module.exports = {
     getChannels,
-    getPlatforms
+    getPlatforms,
+    addChannel
 }

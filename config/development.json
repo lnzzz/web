@@ -1,5 +1,12 @@
+
 {
-    "mongo": {
-        "url": "mongodb://0.0.0.0:27017"
-    }
+"mongo": {
+"url": "mongodb://0.0.0.0:27017"
+},
+"jwt": {
+"secretKey": "dummy"
+},
+"session": {
+"secret": "rjk42$542dasf"
+}
 }

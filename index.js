@@ -568,6 +568,7 @@ app.delete('/twitter/links', jsonMiddleware, async(req, res) => {
   }
 });
 
+
 app.post('/reports/publish', jsonMiddleware, async(req, res) => {
   try {
     const db = client.db(dbName);
@@ -596,6 +597,18 @@ app.post('/upload', upload.single('report-file'), async (req, res) => {
   const db = client.db(dbName);
   await reportsService.createReport(db, req.file.filename);
   res.redirect('/dashboard?activeTab=informes');
+});
+
+app.post('/add-channel',async (req,res)=>{
+  try{
+    const db =client.db(dbName);
+    const channelResp = await channelService.addChannel(db,req.body.channelData);
+
+    res.status(200).send({channel: channelResp});
+
+  }catch (error){
+    res.status(500).json({code:500,message: error.message});
+  }
 });
 
 /* end api */

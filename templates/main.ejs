@@ -30,13 +30,14 @@
 			<div class="container">
 					<ul class="nav nav-pills flex-column flex-sm-row justify-content-between">
 						<li class="nav-item"><a href="#" id="data-btn" class="nav-link" onClick="display('data'); return false;">Datos</a></li>
-						<% if (data.activeReport) { %> 
+						<% if (data.activeReport) { %>
 							<li class="nav-item"><a href="#" id="reports-btn" class="nav-link" onClick="display('reports'); return false;">Informe</a></li>
 						<% } %>
 
 						<% if (data.isPremium) { %>
 							<li class="nav-item"><a href="#" id="query-btn" class="nav-link" onClick="display('query'); return false">Consultas</a></li>
 							<li class="nav-item"><a href="#" id="chart-btn" class="nav-link" onClick="display('chart'); return false">Gráficos</a></li>
+							<li class="nav-item"><a href="#" id="addchannel-btn" class="nav-link" onClick="display('addchannel'); return false">Nuevo canal</a></li>
 						<% } %>
 						<li class="nav-item ms-md-auto ms-sm-auto ms-xs-0"><a class="nav-link" href="/logout">Logout</a></li>
 					</ul>
@@ -57,7 +58,7 @@
 									<h4>M&aacute;x. del d&iacute;a <br/><span class="aclaracion">24hs</span></h4>
 									<h3><%= data.maxes.all.maxDay[0] %></h3>
 									<h2>
-										<% if (data.links.maxDayLink) { %> 
+										<% if (data.links.maxDayLink) { %>
 											<%= data.maxes.all.maxDay[1] %><br/>
 											<a class="more" href="<%= data.links.maxDayLink.linkValue %>" target="_blank">
 												<img src="images/Twitter.svg" width="30" height="30" />
@@ -534,6 +535,7 @@
 				<% if (data.isPremium) { %>
 					<%- include('templates/premium-query'); %>
 					<%- include('templates/charts'); %>
+					<%- include('templates/add-channel'); %>
 				<% } %>
 			</div>
 			<footer class="py-3 my-4 mt-auto">
@@ -618,6 +620,8 @@
 		<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 		<script src="/prem.js"></script>
 		<script src="/charts.js"></script>
+		<script src="/add-channel.js"></script>
+
 
 	<% } %>
     <script src="/main.js"></script>

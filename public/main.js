@@ -35,9 +35,22 @@ function display(which) {
         document.querySelector(`#${which}-btn`).classList.add("active");
         display('totals')
     }
+
+}
+
+function isDataVisible() {
+    return document.querySelector('#data-totals') &&
+        !document.querySelector('#data-totals').classList.contains('d-none');
 }
 
 
+setInterval(() => {
+    console.log('entrando');
+    if (isDataVisible()) {
+        console.log("reload",new Date());
+        location.reload();
+    }
+}, 300000);
 
 display('data');
 display('totals');
