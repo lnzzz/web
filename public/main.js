@@ -44,9 +44,7 @@ function isDataVisible() {
 
 
 setInterval(() => {
-    console.log('entrando');
     if (isDataVisible()) {
-        console.log("reload",new Date());
         location.reload();
     }
 }, 300000);
