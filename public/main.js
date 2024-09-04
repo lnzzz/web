@@ -37,6 +37,19 @@ function display(which) {
     }
 }
 
+function isDataVisible() {
+    return document.querySelector('#data-totals') &&
+        !document.querySelector('#data-totals').classList.contains('d-none');
+}
+
+
+setInterval(() => {
+    console.log('entrando');
+    if (isDataVisible()) {
+        console.log("reload",new Date());
+        location.reload();
+    }
+}, 300000);
 
 
 display('data');

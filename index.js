@@ -578,6 +578,18 @@ app.post('/reports/publish', jsonMiddleware, async(req, res) => {
   }
 })
 
+app.post('/add-channel',async (req,res)=>{
+  try{
+    const db =client.db(dbName);
+    const channelResp = await channelService.addChannel(db,req.body.channelData);
+
+    res.status(200).send({channel: channelResp});
+
+  }catch (error){
+    res.status(500).json({code:500,message: error.message});
+  }
+});
+
 app.post('/reports/unpublish', jsonMiddleware, async(req, res) => {
   try {
     const db = client.db(dbName);
